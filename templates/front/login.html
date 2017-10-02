@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Авторизация - {{ project_name }}</title>
+    <meta charset="utf-8">
+    <meta content="ie=edge" http-equiv="x-ua-compatible">
+    <meta content="{{ project_keywords }}" name="keywords">
+    <meta content="{{ project_author }}" name="author">
+    <meta content="{{ project_description }}" name="description">
+    <meta content="width=device-width, initial-scale=1" name="viewport">
+    {% load static %}
+    <link href="{% static 'favicon.png' %}" rel="shortcut icon">
+    <link href="{% static 'apple-touch-icon.png' %}" rel="apple-touch-icon">
+    <link href="{% static 'bower_components/select2/dist/css/select2.min.css' %}" rel="stylesheet">
+    <link href="{% static 'bower_components/bootstrap-daterangepicker/daterangepicker.css' %}" rel="stylesheet">
+    <link href="{% static 'bower_components/dropzone/dist/dropzone.css' %}" rel="stylesheet">
+    <link href="{% static 'bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css' %}" rel="stylesheet">
+    <link href="{% static 'bower_components/fullcalendar/dist/fullcalendar.min.css' %}" rel="stylesheet">
+    <link href="{% static 'bower_components/perfect-scrollbar/css/perfect-scrollbar.min.css' %}" rel="stylesheet">
+    <link href="{% static 'css/main.css' %}?version=3.5.1" rel="stylesheet">
+</head>
+<body class="auth-wrapper">
+<div class="all-wrapper menu-side with-pattern">
+    <div class="auth-box-w">
+        <div class="logo-w">
+            <a href="{% url 'home' %}"><img alt="" src="{% static 'img/logo-big.png' %}"></a>
+        </div>
+        <h4 class="auth-header">
+            Авторизация
+        </h4>
+        <div class="row">
+            <div class="col-md-11 mx-auto">
+                {% for e in form.non_field_errors %}
+                    <div class="alert alert-danger" role="alert">
+                        <strong>Ошибка! </strong>{{ e }}
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+        <form action="" method="post">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="{{ form.login.id_for_label }}">{{ form.login.label }}</label>{{ form.login }}
+                <div class="pre-icon os-icon os-icon-user-male-circle"></div>
+            </div>
+            <div class="form-group">
+                <label for="{{ form.password.id_for_label }}">{{ form.password.label }}</label>{{ form.password }}
+                <div class="pre-icon os-icon os-icon-fingerprint"></div>
+            </div>
+            <div class="buttons-w">
+                <button class="btn btn-primary">Войти</button>
+                <div class="form-check-inline">
+                    <a href="{% url 'signup' %}">зарегистрироваться</a>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+</body>
+</html>

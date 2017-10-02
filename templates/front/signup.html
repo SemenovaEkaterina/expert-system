@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Регистрация - {{ project_name }}</title>
+    <meta charset="utf-8">
+    <meta content="ie=edge" http-equiv="x-ua-compatible">
+    <meta content="{{ project_keywords }}" name="keywords">
+    <meta content="{{ project_author }}" name="author">
+    <meta content="{{ project_description }}" name="description">
+    <meta content="width=device-width, initial-scale=1" name="viewport">
+    {% load static %}
+    <link href="{% static 'favicon.png' %}" rel="shortcut icon">
+    <link href="{% static 'apple-touch-icon.png' %}" rel="apple-touch-icon">
+    <link href="{% static 'css/main.css' %}?version=3.5.1" rel="stylesheet">
+</head>
+<body>
+<div class="all-wrapper menu-side with-pattern">
+    <div class="auth-box-w wider">
+        <div class="logo-w">
+            <a href="{% url 'home' %}"><img alt="" src="{% static 'img/logo-big.png' %}"></a>
+        </div>
+        <h4 class="auth-header">
+            Регистрация
+        </h4>
+        <div class="row">
+            <div class="col-md-11 mx-auto">
+                {% for e in form.non_field_errors %}
+                    <div class="alert alert-danger" role="alert">
+                        <strong>Ошибка! </strong>{{ e }}
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+        <form action="" method="post">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="{{ form.login.id_for_label }}">{{ form.login.label }}</label>{{ form.login }}
+                <div class="pre-icon os-icon os-icon-user-male-circle"></div>
+            </div>
+            <div class="row">
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label for="{{ form.first_name.id_for_label }}">{{ form.first_name.label }}</label>{{ form.first_name }}
+                        <div class="pre-icon os-icon os-icon-arrow-right"></div>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label for="{{ form.last_name.id_for_label }}">{{ form.last_name.label }}</label>{{ form.last_name }}
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.email.id_for_label }}">{{ form.email.label }}</label>{{ form.email }}
+                <div class="pre-icon os-icon os-icon-email-2-at2"></div>
+            </div>
+            <div class="row">
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label for="{{ form.password1.id_for_label }}">{{ form.password1.label }}</label>{{ form.password1 }}
+                        <div class="pre-icon os-icon os-icon-fingerprint"></div>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label for="{{ form.password2.id_for_label }}">{{ form.password2.label }}</label>{{ form.password2 }}
+                    </div>
+                </div>
+            </div>
+            <div class="buttons-w">
+                <button class="btn btn-primary">Регистрация</button>
+            </div>
+        </form>
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{ project_name }}</title>
+    <meta charset="utf-8">
+    <meta content="ie=edge" http-equiv="x-ua-compatible">
+    <meta content="{{ project_keywords }}" name="keywords">
+    <meta content="{{ project_author }}" name="author">
+    <meta content="{{ project_description }}" name="description">
+    <meta content="width=device-width, initial-scale=1" name="viewport">
+    {% load static %}
+    <link href="{% static 'favicon.png' %}" rel="shortcut icon">
+    <link href="{% static 'apple-touch-icon.png' %}" rel="apple-touch-icon">
+    <link href="{% static 'bower_components/slick-carousel/slick/slick.css' %}" rel="stylesheet">
+    <link href="{% static 'css/front/main.css' %}?version=3.5.1" rel="stylesheet">
+</head>
+<body>
+<div class="all-wrapper">
+    <div class="fade1"></div>
+    <div class="desktop-menu menu-top-w menu-activated-on-hover">
+        <div class="menu-top-i os-container">
+            <div class="logo-w">
+                <div class="logo-element"></div>
+            </div>
+            <ul class="main-menu">
+                <li class="active">
+                    <a href="#sectionLogo">Оболочка</a>
+                </li>
+                <li>
+                    <a href="#sectionSystems">Системы</a>
+                </li>
+                <li>
+                    <a href="#sectionAbout">Что это?</a>
+                </li>
+            </ul>
+            <ul class="small-menu">
+                <li>
+                    <a href="mailto:nks.off@gmail.com"><i class="os-icon os-icon-email-forward"></i><span>Сообщить об ошибке</span></a>
+                </li>
+                <li>
+                    <a class="highlight"
+                       href="{% url 'login' %}">Войти</a>
+                </li>
+            </ul>
+        </div>
+        <div class="mobile-menu-w">
+            <div class="mobile-menu-holder color-scheme-dark">
+                <ul class="mobile-menu">
+                    <li class="active">
+                        <a href="#sectionLogo">Оболочка</a>
+                    </li>
+                    <li>
+                        <a href="#sectionSystems">Системы</a>
+                    </li>
+                    <li>
+                        <a href="#sectionAbout">Что это?</a>
+                    </li>
+                    <li>
+                        <a href="mailto:nks.off@gmail.com">Сообщить об ошибке</a>
+                    </li>
+                    <li>
+                        <a href="{% url 'login' %}">Войти</a>
+                    </li>
+                </ul>
+            </div>
+            <div class="mobile-menu-i">
+                <div class="mobile-logo-w">
+                    <div class="logo-element"></div>
+                </div>
+                <div class="mobile-menu-trigger">
+                    <i class="os-icon os-icon-hamburger-menu-1"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="intro-w layout-v1" id="sectionLogo">
+        <div class="os-container">
+            <div class="fade2"></div>
+            <div class="intro-i">
+                <div class="intro-description">
+                    <h1 class="intro-heading">
+                        Классная <span>оболочка</span> для экспертных систем
+                    </h1>
+                    <div class="intro-text">
+                        Инструмент для создания экспертных систем для&nbsp;студентов&nbsp;от&nbsp;студентов
+                    </div>
+                    <div class="intro-buttons">
+                        <a class="btn btn-primary" href="#"><i
+                                class="os-icon os-icon-social-09"></i><span>Попробовать</span></a>
+                    </div>
+                </div>
+                <div class="intro-media">
+                    <div class="shot shot1">
+                        <div class="shot-i" style="background-image: url(&#39;img/front/intro_chat.jpg&#39;)"></div>
+                    </div>
+                    <div class="shot shot2">
+                        <div class="shot-i" style="background-image: url(&#39;img/front/intro_profile.jpg&#39;)"></div>
+                    </div>
+                    <div class="shot shot3">
+                        <div class="shot-i" style="background-image: url(&#39;img/front/intro_dash.jpg&#39;)"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="section-header-w centered" id="sectionSystems">
+        <div class="fade3"></div>
+        <div class="os-container">
+            <div class="section-header">
+                <h2 class="section-title">
+                    Готовые системы
+                </h2>
+                <div class="section-desc">
+                    Да, кто-то уже ей воспользовался. Да, оболочка работает.
+                    <br/> Нет, не как предыдущая.
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="demos-w">
+        <div class="row">
+            <div class="col-sm-6 col-xl-4">
+                <a class="demo-w" href="layouts_menu_side.html" target="_blank">
+                    <div class="demo-header">
+                        Side Menu Light
+                    </div>
+                    <div class="demo-shot-w">
+                        <div class="demo-shot" style="background-image: url({% static 'img/menu_bg.jpg' %})"></div>
+                    </div>
+                </a>
+            </div>
+            <div class="col-sm-6 col-xl-4">
+                <a class="demo-w" href="layouts_menu_side_dark.html" target="_blank">
+                    <div class="demo-header">
+                        Side Menu Dark
+                    </div>
+                    <div class="demo-shot-w">
+                        <div class="demo-shot" style="background-image: url({% static 'img/menu_bg.jpg' %})"></div>
+                    </div>
+                </a>
+            </div>
+            <div class="col-sm-6 col-xl-4">
+                <a class="demo-w" href="layouts_menu_top_image.html" target="_blank">
+                    <div class="demo-header">
+                        Menu Top Image Back
+                    </div>
+                    <div class="demo-shot-w">
+                        <div class="demo-shot" style="background-image: url({% static 'img/menu_bg.jpg' %})"></div>
+                    </div>
+                </a>
+            </div>
+            <div class="col-sm-6 col-xl-4">
+                <a class="demo-w" href="apps_projects.html" target="_blank">
+                    <div class="demo-header">
+                        Side & Top Menu
+                    </div>
+                    <div class="demo-shot-w">
+                        <div class="demo-shot" style="background-image: url({% static 'img/menu_bg.jpg' %})"></div>
+                    </div>
+                </a>
+            </div>
+            <div class="col-sm-6 col-xl-4">
+                <a class="demo-w" href="layouts_menu_top.html" target="_blank">
+                    <div class="demo-header">
+                        Top Menu Light
+                    </div>
+                    <div class="demo-shot-w">
+                        <div class="demo-shot" style="background-image: url({% static 'img/menu_bg.jpg' %})"></div>
+                    </div>
+                </a>
+            </div>
+            <div class="col-sm-6 col-xl-4">
+                <a class="demo-w" href="layouts_menu_top_dark.html" target="_blank">
+                    <div class="demo-header">
+                        Top Menu Dark
+                    </div>
+                    <div class="demo-shot-w">
+                        <div class="demo-shot" style="background-image: url({% static 'img/menu_bg.jpg' %})"></div>
+                    </div>
+                </a>
+            </div>
+            <div class="col-sm-6 col-xl-4 offset-xl-2">
+                <a class="demo-w" href="layouts_menu_side_compact_dark.html" target="_blank">
+                    <div class="demo-header">
+                        Compact Side Menu Dark
+                    </div>
+                    <div class="demo-shot-w">
+                        <div class="demo-shot"
+                             style="background-image: url({% static 'img/menu_bg.jpg' %})"></div>
+                    </div>
+                </a>
+            </div>
+            <div class="col-sm-6 col-xl-4">
+                <a class="demo-w" href="layouts_menu_side_compact.html" target="_blank">
+                    <div class="demo-header">
+                        Compact Side Menu Light
+                    </div>
+                    <div class="demo-shot-w">
+                        <div class="demo-shot"
+                             style="background-image: url({% static 'img/menu_bg.jpg' %})"></div>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
+    <div class="section-header-w" id="sectionAbout">
+        <div class="fade3"></div>
+        <div class="os-container">
+            <div class="section-header">
+                <h5 class="section-sub-title">
+                    Что это?
+                </h5>
+                <h2 class="section-title">
+                    Инструмент для создания <i>правильных</i> экспертных систем
+                </h2>
+                <div class="section-desc">
+                    Если Вы &ndash; эксперт в какой-либо области и не хотите думать головой и применять свои экспертные
+                    знания, создайте экспертную систему, которая будет работать за Вас.
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="features-table">
+        <div class="os-container">
+            <div class="row no-gutters">
+                <div class="col-xl-4 col-sm-6 b-l b-t feature-cell">
+                    <div class="feature-icon">
+                        <i class="os-icon os-icon-pencil-1"></i>
+                    </div>
+                    <h6 class="feature-title">
+                        Система
+                    </h6>
+                    <div class="feature-text">
+                        Алгоритм и интерфейс, позволяющие получить исходную информацию и на ее основе выдать некое
+                        решение.
+                    </div>
+                </div>
+                <div class="col-xl-4 col-sm-6 b-r b-l b-t feature-cell">
+                    <div class="feature-icon">
+                        <i class="os-icon os-icon-fingerprint"></i>
+                    </div>
+                    <h6 class="feature-title">
+                        Объекты
+                    </h6>
+                    <div class="feature-text">
+                        Набор реальных (или не очень) предметов, понятий, событий, явлений, которые могут стать решением
+                        системы.
+                    </div>
+                </div>
+                <div class="col-xl-4 col-sm-6 b-r b-t feature-cell">
+                    <div class="feature-icon">
+                        <i class="os-icon os-icon-mail-14"></i>
+                    </div>
+                    <h6 class="feature-title">
+                        Атрибуты
+                    </h6>
+                    <div class="feature-text">
+                        Свойства объектов, согласно которым их можно сравнивать.
+                    </div>
+                </div>
+                <div class="col-xl-4 col-sm-6 b-l feature-cell">
+                    <div class="feature-icon">
+                        <i class="os-icon os-icon-pencil-1"></i>
+                    </div>
+                    <h6 class="feature-title">
+                        Вопросы
+                    </h6>
+                    <div class="feature-text">
+                        Заковыристые вопросительные предложения, помогающие вытащить исходные данные из пользователя.
+                    </div>
+                </div>
+                <div class="col-xl-4 col-sm-6 b-r b-l feature-cell">
+                    <div class="feature-icon">
+                        <i class="os-icon os-icon-fingerprint"></i>
+                    </div>
+                    <h6 class="feature-title">
+                        Ответы
+                    </h6>
+                    <div class="feature-text">
+                        Необычные предложения и словосочетания, отражающие результат дум пользователя при ответе на
+                        вопросы.
+                    </div>
+                </div>
+                <div class="col-xl-4 col-sm-6 b-r feature-cell">
+                    <div class="feature-icon">
+                        <i class="os-icon os-icon-mail-14"></i>
+                    </div>
+                    <h6 class="feature-title">
+                        Параметры
+                    </h6>
+                    <div class="feature-text">
+                        Переменные величины, показывающие значение ответов пользователя на вопросы.
+                    </div>
+                </div>
+                <div class="col-xl-4 col-sm-6 b-l feature-cell">
+                    <div class="feature-icon">
+                        <i class="os-icon os-icon-ui-44"></i>
+                    </div>
+                    <h6 class="feature-title">
+                        Правила
+                    </h6>
+                    <div class="feature-text">
+                        Связь между параметрами и атрибутами, выраженная в виде "Если ..., то ...".
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="call-to-action">
+        <h3 class="cta-header">
+            Хотите попробовать?
+        </h3>
+        <div class="cta-desc">
+            Вы не поверите, но это бесплатно.
+        </div>
+        <div class="cta-btn">
+            <a class="btn btn-primary btn-lg btn-rounded"
+               href="#"><span>Приступить</span><i class="os-icon os-icon-arrow-right4"></i><i
+                    class="os-icon os-icon-arrow-right4"></i></a>
+        </div>
+    </div>
+    <div class="footer-w">
+        <div class="fade3"></div>
+        <div class="os-container">
+            <div class="footer-i">
+                <div class="row">
+                    <div class="col-sm-7 col-lg-4 b-r padded">
+                        <div class="logo-element"></div>
+                        <h3 class="heading-big">
+                            Оболочка для экспертных систем
+                        </h3>
+                        <h6 class="heading-small">
+                            Разработано на ИУ5
+                        </h6>
+                        <p>
+                        </p>
+                    </div>
+                    <div class="col-sm-5 col-lg-8">
+                        <div class="row">
+                            <div class="col-lg-4 b-r padded">
+                                <h6 class="heading-small">
+                                    Авторы
+                                </h6>
+                                <p>
+                                    Семенова&nbsp;Екатерина, Слимов&nbsp;Никита
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="deep-footer">
+                Лайк, шер, репост. &copy; 2017 ИУ5-73.
+            </div>
+        </div>
+    </div>
+    <div class="display-type"></div>
+</div>
+<script src="{% static 'bower_components/jquery/dist/jquery.min.js' %}"></script>
+<script src="{% static 'bower_components/slick-carousel/slick/slick.min.js' %}"></script>
+<script src="{% static 'bower_components/ion.rangeSlider/js/ion.rangeSlider.min.js' %}"></script>
+<script src="{% static 'bower_components/select2/dist/js/select2.full.min.js' %}"></script>
+<script src="{% static 'bower_components/jquery-bar-rating/dist/jquery.barrating.min.js' %}"></script>
+<script src="{% static 'bower_components/moment/moment.js' %}"></script>
+<script src="{% static 'bower_components/bootstrap-daterangepicker/daterangepicker.js' %}"></script>
+<script src="{% static 'js/main_front.js' %}?version=3.0"></script>
+</body>
+</html>
