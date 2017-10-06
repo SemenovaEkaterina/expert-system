@@ -2,6 +2,7 @@ from django.contrib.auth import authenticate
 from django.contrib.auth.hashers import make_password
 from django.db import models
 from django import forms
+from .models_domain import *
 
 from django.contrib.auth.models import User
 
