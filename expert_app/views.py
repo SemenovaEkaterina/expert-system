@@ -1,7 +1,8 @@
 from django.contrib import auth
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect
-from django.shortcuts import render
+from django.shortcuts import render, redirect
+from django.urls import reverse
 from django.utils.decorators import method_decorator
 
 from django.views import View
@@ -77,4 +78,21 @@ class Signup(View):
 
         return render(request, 'front/signup.html', {
             'form': form,
+        })
+
+
+class OfficeDashboard(View):
+    @method_decorator(need_login)
+    def get(self, request):
+        return redirect(reverse('office_systems'))
+
+
+class OfficeSystems(View):
+    @method_decorator(need_login)
+    def get(self, request, page='mine'):
+        if page not in ['mine', 'all']:
+            page = 'mine'
+
+        return render(request, 'office/systems.html', {
+            'page': page,
         })

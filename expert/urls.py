@@ -16,11 +16,13 @@ Including another URLconf
 from django.conf.urls import url
 
 # from django.contrib import admin
-from expert_app.views import Home, Login, Signup, Logout
+from expert_app.views import Home, Login, Signup, Logout, OfficeDashboard, OfficeSystems
 
 urlpatterns = [
-    url(r'^login/', Login.as_view(), name='login'),
-    url(r'^signup/', Signup.as_view(), name='signup'),
-    url(r'^logout/', Logout.as_view(), name='logout'),
+    url(r'^login/$', Login.as_view(), name='login'),
+    url(r'^signup/$', Signup.as_view(), name='signup'),
+    url(r'^logout/$', Logout.as_view(), name='logout'),
+    url(r'^office/systems/(?P<page>\w*)?$', OfficeSystems.as_view(), name='office_systems'),
+    url(r'^office/', OfficeDashboard.as_view(), name='office'),
     url(r'^$', Home.as_view(), name='home'),
 ]

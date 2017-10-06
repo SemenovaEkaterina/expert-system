@@ -11,7 +11,6 @@
     {% load static %}
     <link href="{% static 'favicon.png' %}" rel="shortcut icon">
     <link href="{% static 'apple-touch-icon.png' %}" rel="apple-touch-icon">
-    <link href="{% static 'bower_components/slick-carousel/slick/slick.css' %}" rel="stylesheet">
     <link href="{% static 'css/front/main.css' %}?version=3.5.1" rel="stylesheet">
 </head>
 <body>
@@ -38,8 +37,11 @@
                     <a href="mailto:nks.off@gmail.com"><i class="os-icon os-icon-email-forward"></i><span>Сообщить об ошибке</span></a>
                 </li>
                 <li>
-                    <a class="highlight"
-                       href="{% url 'login' %}">Войти</a>
+                    {% if request.user.is_authenticated %}
+                        <a class="highlight" href="{% url 'office' %}">Кабинет</a>
+                    {% else %}
+                        <a class="highlight" href="{% url 'office' %}">Войти</a>
+                    {% endif %}
                 </li>
             </ul>
         </div>
@@ -59,7 +61,11 @@
                         <a href="mailto:nks.off@gmail.com">Сообщить об ошибке</a>
                     </li>
                     <li>
-                        <a href="{% url 'login' %}">Войти</a>
+                        {% if request.user.is_authenticated %}
+                            <a href="{% url 'office' %}">Кабинет</a>
+                        {% else %}
+                            <a href="{% url 'login' %}">Войти</a>
+                        {% endif %}
                     </li>
                 </ul>
             </div>
@@ -85,7 +91,7 @@
                         Инструмент для создания экспертных систем для&nbsp;студентов&nbsp;от&nbsp;студентов
                     </div>
                     <div class="intro-buttons">
-                        <a class="btn btn-primary" href="#"><i
+                        <a class="btn btn-primary" href="{% url 'office' %}"><i
                                 class="os-icon os-icon-social-09"></i><span>Попробовать</span></a>
                     </div>
                 </div>
@@ -315,7 +321,7 @@
         </div>
         <div class="cta-btn">
             <a class="btn btn-primary btn-lg btn-rounded"
-               href="#"><span>Приступить</span><i class="os-icon os-icon-arrow-right4"></i><i
+               href="{% url 'office' %}"><span>Приступить</span><i class="os-icon os-icon-arrow-right4"></i><i
                     class="os-icon os-icon-arrow-right4"></i></a>
         </div>
     </div>

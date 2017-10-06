@@ -67,7 +67,7 @@ class SignupForm(forms.Form):
         min_length=6, label=u'Повторите пароль'
     )
 
-    def clean_username(self):
+    def clean_login(self):
         login = self.cleaned_data.get('login', '')
 
         try:

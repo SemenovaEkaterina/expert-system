@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{% block title %}{% endblock %} &mdash; {{ project_name }}</title>
+    <meta charset="utf-8">
+    <meta content="{{ project_keywords }}" name="keywords">
+    <meta content="{{ project_author }}" name="author">
+    <meta content="{{ project_description }}" name="description">
+    <meta content="width=device-width, initial-scale=1" name="viewport">
+    {% load static %}
+    <link href="{% static 'favicon.png' %}" rel="shortcut icon">
+    <link href="{% static 'apple-touch-icon.png' %}" rel="apple-touch-icon">
+    <link href="{% static 'css/main.css' %}?version=3.5.1" rel="stylesheet">
+</head>
+<body>
+<div class="all-wrapper menu-side">
+    <div class="layout-w">
+        <div class="menu-mobile menu-activated-on-click color-scheme-dark">
+            <div class="mm-logo-buttons-w">
+                <a class="mm-logo" href="{% url 'home' %}">
+                    <img src="{% static 'img/logo.png' %}"><span></span>
+                </a>
+                <div class="mm-buttons">
+                    <div class="content-panel-open">
+                        <div class="os-icon os-icon-grid-circles"></div>
+                    </div>
+                    <div class="mobile-menu-trigger">
+                        <div class="os-icon os-icon-hamburger-menu-1"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="menu-and-user">
+                <div class="logged-user-w">
+                    <div class="avatar-w">
+                        <img alt="{{ request.user.first_name }} {{ request.user.last_name }}"
+                             src="{% static 'img/ava.png' %}">
+                    </div>
+                    <div class="logged-user-info-w">
+                        <div class="logged-user-name">
+                            {{ request.user.first_name }} {{ request.user.last_name }}
+                        </div>
+                        <div class="logged-user-role">{{ request.user.username }}</div>
+                    </div>
+                </div>
+                <ul class="main-menu">
+                    <li>
+                        <a href="{% url 'office_systems' %}">
+                            <div class="icon-w">
+                                <div class="os-icon os-icon-hierarchy-structure-2"></div>
+                            </div>
+                            <span>Системы</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="desktop-menu menu-side-compact-w menu-activated-on-hover">
+            <div class="logo-w">
+                <a class="logo" href="{% url 'home' %}"><img src="{% static 'img/logo.png' %}"></a>
+            </div>
+            <div class="menu-and-user">
+                <div class="logged-user-w">
+                    <div class="logged-user-i">
+                        <div class="avatar-w">
+                            <img alt="{{ request.user.first_name }} {{ request.user.last_name }}"
+                                 src="{% static 'img/ava.png' %}">
+                        </div>
+                        <div class="logged-user-menu">
+                            <div class="logged-user-avatar-info">
+                                <div class="avatar-w">
+                                    <img alt="{{ request.user.first_name }} {{ request.user.last_name }}"
+                                         src="{% static 'img/ava.png' %}">
+                                </div>
+                                <div class="logged-user-info-w">
+                                    <div class="logged-user-name">
+                                        {{ request.user.first_name }} {{ request.user.last_name }}
+                                    </div>
+                                    <div class="logged-user-role">
+                                        {{ request.user.username }}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="bg-icon">
+                                <i class="os-icon os-icon-wallet-loaded"></i>
+                            </div>
+                            <ul>
+                                <li>
+                                    <a href="{% url 'logout' %}"><i
+                                            class="os-icon os-icon-signs-11"></i><span>Выйти</span></a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <ul class="main-menu">
+                    <li>
+                        <a href="{% url 'office_systems' %}">
+                            <div class="icon-w">
+                                <i class="os-icon os-icon-hierarchy-structure-2"></i>
+                            </div>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="content-w">
+            <ul class="breadcrumb">
+                <li class="breadcrumb-item">
+                    <a href="{% url 'home' %}">Главная</a>
+                </li>
+                <li class="breadcrumb-item">
+                    <a href="{% url 'office' %}">Кабинет</a>
+                </li>
+                <li class="breadcrumb-item">
+                    <span>{% block breadcrumb_title %}{% endblock %}</span>
+                </li>
+            </ul>
+            <div class="content-i">
+                <div class="content-box">
+                    {% block content %}{% endblock %}
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="display-type"></div>
+</div>
+<script src="{% static 'bower_components/jquery/dist/jquery.min.js' %}"></script>
+<script src="{% static 'bower_components/moment/moment.js' %}"></script>
+<script src="{% static 'bower_components/chart.js/dist/Chart.min.js' %}"></script>
+<script src="{% static 'bower_components/select2/dist/js/select2.full.min.js' %}"></script>
+<script src="{% static 'bower_components/ckeditor/ckeditor.js' %}"></script>
+<script src="{% static 'bower_components/bootstrap-validator/dist/validator.min.js' %}"></script>
+<script src="{% static 'bower_components/bootstrap-daterangepicker/daterangepicker.js' %}"></script>
+<script src="{% static 'bower_components/dropzone/dist/dropzone.js' %}"></script>
+<script src="{% static 'bower_components/editable-table/mindmup-editabletable.js' %}"></script>
+<script src="{% static 'bower_components/datatables.net/js/jquery.dataTables.min.js' %}"></script>
+<script src="{% static 'bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js' %}"></script>
+<script src="{% static 'bower_components/fullcalendar/dist/fullcalendar.min.js' %}"></script>
+<script src="{% static 'bower_components/perfect-scrollbar/js/perfect-scrollbar.jquery.min.js' %}"></script>
+<script src="{% static 'bower_components/tether/dist/js/tether.min.js' %}"></script>
+<script src="{% static 'bower_components/bootstrap/js/dist/util.js' %}"></script>
+<script src="{% static 'bower_components/bootstrap/js/dist/alert.js' %}"></script>
+<script src="{% static 'bower_components/bootstrap/js/dist/button.js' %}"></script>
+<script src="{% static 'bower_components/bootstrap/js/dist/carousel.js' %}"></script>
+<script src="{% static 'bower_components/bootstrap/js/dist/collapse.js' %}"></script>
+<script src="{% static 'bower_components/bootstrap/js/dist/dropdown.js' %}"></script>
+<script src="{% static 'bower_components/bootstrap/js/dist/modal.js' %}"></script>
+<script src="{% static 'bower_components/bootstrap/js/dist/tab.js' %}"></script>
+<script src="{% static 'bower_components/bootstrap/js/dist/tooltip.js' %}"></script>
+<script src="{% static 'bower_components/bootstrap/js/dist/popover.js' %}"></script>
+<script src="{% static 'js/main.js' %}?version=3.5.1"></script>
+</body>
+</html>
