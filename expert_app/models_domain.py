@@ -6,16 +6,37 @@ from django.db.models import Count
 from django.contrib.auth.models import User
 
 
-class SystemManager(models.Manager):
-    @staticmethod
-    def get_by_user(user_id):
-        return System.objects.filter(user__id=user_id).order_by('name').annotate(objects_count=Count('object'),
-                                                                                 questions_count=Count('question'))
+class SystemQuerySet(models.QuerySet):
+    def with_counters(self):
+        return self.annotate(objects_count=Count('object'),
+                             questions_count=Count('question')
+                             )
 
-    @staticmethod
-    def all(public):
-        return System.objects.filter(public=public).order_by('name').annotate(objects_count=Count('object'),
-                                                                              questions_count=Count('question'))
+    def by_user(self, user):
+        return self.filter(user=user)
+
+    def with_public(self, val=None):
+        if val is None:
+            return self
+
+        return self.filter(public=val)
+
+    def order_by_name(self):
+        return self.order_by('name')
+
+
+class SystemManager(models.Manager):
+    def get_queryset(self):
+        res = SystemQuerySet(self.model, using=self._db)
+        return res.with_counters().order_by_name()
+
+    def get_by_user(self, user):
+        q = self.get_queryset()
+        return q.by_user(user)
+
+    def all(self, public=None):
+        q = self.get_queryset()
+        return q.with_public(public)
 
 
 class System(models.Model):
@@ -25,21 +46,13 @@ class System(models.Model):
     description = models.TextField(default="")
     image = models.ImageField(upload_to='system_images/', blank=True, null=True)
     public = models.BooleanField(default=False)
-    systems = SystemManager()
-    objects = models.Manager()
 
-
-class ObjectManager(models.Manager):
-    @staticmethod
-    def get_count(system_id):
-        return Object.objects.filter(system__id=system_id).count()
+    objects = SystemManager()
 
 
 class Object(models.Model):
     name = models.CharField(max_length=30)
     system = models.ForeignKey(System, blank=True, null=True)
-    objs = ObjectManager()
-    objects = models.Manager()
 
 
 class Attribute(models.Model):

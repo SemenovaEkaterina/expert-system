@@ -98,11 +98,9 @@ class OfficeSystems(View):
         lst = []
 
         if page == 'mine':
-            lst = System.systems.get_by_user(request.user.id)
+            lst = System.objects.get_by_user(request.user)
         elif page == 'all':
-            lst = System.systems.all(True)
-
-        print(lst)
+            lst = System.objects.all(True)
 
         return render(request, 'office/systems.html', {
             'page': page,
