@@ -13,6 +13,7 @@ class SystemManager(models.Manager):
     def all(public):
         return System.objects.filter(public=public).order_by('name')
 
+
 class System(models.Model):
     name = models.CharField(max_length=30)
     user = models.ForeignKey(User)  # пользователь-создатель
