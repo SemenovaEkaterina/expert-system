@@ -8,8 +8,8 @@ from django.contrib.auth.models import User
 
 class SystemQuerySet(models.QuerySet):
     def with_counters(self):
-        return self.annotate(objects_count=Count('object'),
-                             questions_count=Count('question')
+        return self.annotate(objects_count=Count('object', distinct=True),
+                             questions_count=Count('question', distinct=True)
                              )
 
     def by_user(self, user):
@@ -25,7 +25,7 @@ class SystemQuerySet(models.QuerySet):
         return self.order_by('name')
 
     def order_by_created_at(self):
-        return self.order_by('created_at')
+        return self.order_by('-created_at')
 
 
 class SystemManager(models.Manager):
@@ -41,9 +41,9 @@ class SystemManager(models.Manager):
         q = self.get_queryset()
         return q.with_public(public)
 
-    def all_front(self):
+    def all_for_front(self):
         q = self.get_queryset()
-        return q.order_by_created_at()
+        return q.order_by_created_at().with_public(True)
 
 
 class System(models.Model):

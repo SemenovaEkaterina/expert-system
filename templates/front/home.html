@@ -125,88 +125,20 @@
     </div>
     <div class="demos-w">
         <div class="row">
-            <div class="col-sm-6 col-xl-4">
-                <a class="demo-w" href="layouts_menu_side.html" target="_blank">
-                    <div class="demo-header">
-                        Side Menu Light
-                    </div>
-                    <div class="demo-shot-w">
-                        <div class="demo-shot" style="background-image: url({% static 'img/menu_bg.jpg' %})"></div>
-                    </div>
-                </a>
-            </div>
-            <div class="col-sm-6 col-xl-4">
-                <a class="demo-w" href="layouts_menu_side_dark.html" target="_blank">
-                    <div class="demo-header">
-                        Side Menu Dark
-                    </div>
-                    <div class="demo-shot-w">
-                        <div class="demo-shot" style="background-image: url({% static 'img/menu_bg.jpg' %})"></div>
-                    </div>
-                </a>
-            </div>
-            <div class="col-sm-6 col-xl-4">
-                <a class="demo-w" href="layouts_menu_top_image.html" target="_blank">
-                    <div class="demo-header">
-                        Menu Top Image Back
-                    </div>
-                    <div class="demo-shot-w">
-                        <div class="demo-shot" style="background-image: url({% static 'img/menu_bg.jpg' %})"></div>
-                    </div>
-                </a>
-            </div>
-            <div class="col-sm-6 col-xl-4">
-                <a class="demo-w" href="apps_projects.html" target="_blank">
-                    <div class="demo-header">
-                        Side & Top Menu
-                    </div>
-                    <div class="demo-shot-w">
-                        <div class="demo-shot" style="background-image: url({% static 'img/menu_bg.jpg' %})"></div>
-                    </div>
-                </a>
-            </div>
-            <div class="col-sm-6 col-xl-4">
-                <a class="demo-w" href="layouts_menu_top.html" target="_blank">
-                    <div class="demo-header">
-                        Top Menu Light
-                    </div>
-                    <div class="demo-shot-w">
-                        <div class="demo-shot" style="background-image: url({% static 'img/menu_bg.jpg' %})"></div>
-                    </div>
-                </a>
-            </div>
-            <div class="col-sm-6 col-xl-4">
-                <a class="demo-w" href="layouts_menu_top_dark.html" target="_blank">
-                    <div class="demo-header">
-                        Top Menu Dark
-                    </div>
-                    <div class="demo-shot-w">
-                        <div class="demo-shot" style="background-image: url({% static 'img/menu_bg.jpg' %})"></div>
-                    </div>
-                </a>
-            </div>
-            <div class="col-sm-6 col-xl-4 offset-xl-2">
-                <a class="demo-w" href="layouts_menu_side_compact_dark.html" target="_blank">
-                    <div class="demo-header">
-                        Compact Side Menu Dark
-                    </div>
-                    <div class="demo-shot-w">
-                        <div class="demo-shot"
-                             style="background-image: url({% static 'img/menu_bg.jpg' %})"></div>
-                    </div>
-                </a>
-            </div>
-            <div class="col-sm-6 col-xl-4">
-                <a class="demo-w" href="layouts_menu_side_compact.html" target="_blank">
-                    <div class="demo-header">
-                        Compact Side Menu Light
-                    </div>
-                    <div class="demo-shot-w">
-                        <div class="demo-shot"
-                             style="background-image: url({% static 'img/menu_bg.jpg' %})"></div>
-                    </div>
-                </a>
-            </div>
+            {% for system in systems %}
+                <div class="col-sm-6 col-xl-4">
+                    <a class="demo-w" href="#" target="_blank">
+                        <div class="demo-header" style="min-height: 3em">
+                            {{ system.name }}
+                        </div>
+                        <div class="demo-shot-w">
+                            <div class="demo-shot" style="background-image: url({% if system.image %}{{ system.image.url }}{% else %}{% static 'img/front/system.jpg' %}{% endif %})"></div>
+                        </div>
+                    </a>
+                </div>
+            {% empty %}
+                <h3>Упс, системы еще в разработке.</h3>
+            {% endfor %}
         </div>
     </div>
     <div class="section-header-w" id="sectionAbout">

@@ -18,8 +18,10 @@ def need_login(func):
 
 class Home(View):
     def get(self, request):
-        systems = System.objects
-        return render(request, 'front/home.html')
+        systems = System.objects.all_for_front()
+        return render(request, 'front/home.html', {
+            'systems': systems,
+        })
 
 
 class Logout(View):
