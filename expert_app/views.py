@@ -95,17 +95,14 @@ class OfficeSystems(View):
         if page not in ['mine', 'all']:
             page = 'mine'
 
-        system = System()
-        system.name = 'Test'
-        system.user = request.user
-        system.author = 'Author of the system'
-        system.description = 'Description'
-        system.public = True
+        lst = []
 
-        lst = [
-            system,
-            system
-        ]
+        if page == 'mine':
+            lst = System.systems.get_by_user(request.user.id)
+        elif page == 'all':
+            lst = System.systems.all(True)
+
+        print(lst)
 
         return render(request, 'office/systems.html', {
             'page': page,
