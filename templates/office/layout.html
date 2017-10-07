@@ -13,7 +13,7 @@
     <link href="{% static 'css/main.css' %}?version=3.5.1" rel="stylesheet">
 </head>
 <body>
-<div class="all-wrapper menu-side">
+<div class="all-wrapper menu-side {% block wrapper_classes %}{% endblock %}">
     <div class="layout-w">
         <div class="menu-mobile menu-activated-on-click color-scheme-dark">
             <div class="mm-logo-buttons-w">
@@ -168,5 +168,7 @@
 <script src="{% static 'bower_components/bootstrap/js/dist/tooltip.js' %}"></script>
 <script src="{% static 'bower_components/bootstrap/js/dist/popover.js' %}"></script>
 <script src="{% static 'js/main.js' %}?version=3.5.1"></script>
+
+{% block scripts %}{% endblock %}
 </body>
 </html>

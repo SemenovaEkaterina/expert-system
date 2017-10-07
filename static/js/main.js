@@ -4,7 +4,6 @@
 
 Main javascript functions to init most of the elements
 
-#1. CHAT APP
 #2. CALENDAR INIT
 #3. FORM VALIDATION
 #4. DATE RANGE PICKER
@@ -37,26 +36,6 @@ function not_display_type(display_type) {
 }
 
 $(function () {
-
-  // #1. CHAT APP
-
-  $('.floated-chat-btn, .floated-chat-w .chat-close').on('click', function () {
-    $('.floated-chat-w').toggleClass('active');
-    return false;
-  });
-
-  $('.message-input').on('keypress', function (e) {
-    if (e.which == 13) {
-      $('.chat-messages').append('<div class="message self"><div class="message-content">' + $(this).val() + '</div></div>');
-      $(this).val('');
-      var $messages_w = $('.floated-chat-w .chat-messages');
-      $messages_w.scrollTop($messages_w.prop("scrollHeight"));
-      $messages_w.perfectScrollbar('update');
-      return false;
-    }
-  });
-
-  $('.floated-chat-w .chat-messages').perfectScrollbar();
 
   // #2. CALENDAR INIT
 

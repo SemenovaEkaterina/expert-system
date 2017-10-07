@@ -28,7 +28,7 @@
             <div class="padded-lg" style="min-height: 500px">
                 <div class="projects-list">
                     {% for system in systems %}
-                        {% include 'office/systems_list_single.html' with system=system %}
+                        {% include 'office/systems/list/item.html' with system=system %}
                     {% empty %}
                         <div class="element-box">
                             <h3>Не найдено.</h3>
@@ -43,4 +43,14 @@
     <div class="floated-chat-btn">
         <i class="os-icon os-icon-edit-3"></i><span>Создать новую систему</span>
     </div>
+{% endblock %}
+
+
+
+{% block scripts %}
+    <script>
+        $('.floated-chat-btn').click(function () {
+            window.location.href = '{% url 'office_system_add' %}';
+        });
+    </script>
 {% endblock %}

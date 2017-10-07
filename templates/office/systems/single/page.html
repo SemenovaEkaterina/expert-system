@@ -1,0 +1,50 @@
+{% extends 'office/layout.html' %}
+
+{% block title %}{{ title }}{% endblock %}
+{% block breadcrumbs %}
+    <li class="breadcrumb-item">
+        <a href="{% url 'office_systems' %}">Системы</a>
+    </li>
+{% endblock %}
+{% block breadcrumb_title %}{{ title }}{% endblock %}
+{% block wrapper_classes %}no-padding-content{% endblock %}
+
+{% block content %}
+    <div class="todo-app-w">
+        <div class="todo-sidebar">
+            <div class="todo-sidebar-section">
+                {% block page_menu %}
+                    <h4 class="todo-sidebar-section-header">
+                        <span>Система</span>{% if is_mine %}<i class="os-icon os-icon-ui-02 starred"></i>{% endif %}
+
+                        <a class="todo-sidebar-section-toggle" href="#">
+                            <i class="os-icon os-icon-ui-23"></i></a>
+                    </h4>
+                    <div class="todo-sidebar-section-contents">
+                        <div class="todo-sidebar-section-contents">
+                            <ul class="tasks-list">
+                                {% for section in sections %}
+                                    <li class="{{ section.color }}">
+                                        {% if section.key == section_active %}
+                                            <strong><u>{{ section.title }}</u></strong>
+                                        {% else %}
+                                            <a href="{% url 'office_system' sid=system.id section=section.key %}">{{ section.title }}</a>
+                                        {% endif %}
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </div>
+                {% endblock %}
+            </div>
+        </div>
+        <div class="todo-content">
+            <h4 class="todo-content-header">
+                {% block page_title %}
+                    <i class="os-icon os-icon-ui-92"></i><span>{{ title }}</span>
+                {% endblock %}
+            </h4>
+            {% block page_content %}{% endblock %}
+        </div>
+    </div>
+{% endblock %}

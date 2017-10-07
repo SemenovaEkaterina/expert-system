@@ -1,6 +1,6 @@
 from django.contrib import auth
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponseRedirect, HttpResponse
+from django.http import HttpResponseRedirect, HttpResponse, Http404
 from django.shortcuts import render, redirect, render_to_response
 from django.template import RequestContext
 from django.urls import reverse
@@ -105,18 +105,85 @@ class OfficeSystems(View):
         elif page == 'all':
             lst = System.objects.all(True)
 
-        return render(request, 'office/systems.html', {
+        return render(request, 'office/systems/list/page.html', {
             'page': page,
             'systems': lst
         })
 
 
 class OfficeSystemSingle(View):
-    def get(self, request, sid):
+    def get(self, request, sid, section='about'):
         system = get_object_or_404(System, pk=sid)
+        is_mine = system.is_by_user(request.user)
 
-        return render(request, 'office/systems_single.html', {
+        sections = [
+            {
+                'title': 'О системе',
+                'key': 'about',
+                'color': 'danger',
+            },
+            {
+                'title': 'Атрибуты объектов',
+                'key': 'attrs',
+                'color': 'warning',
+            },
+            {
+                'title': 'Объекты',
+                'key': 'objects',
+                'color': 'warning',
+            },
+            {
+                'title': 'Параметры',
+                'key': 'params',
+                'color': 'success',
+            },
+            {
+                'title': 'Вопросы',
+                'key': 'questions',
+                'color': 'success',
+            },
+            {
+                'title': 'Правила',
+                'key': 'rules',
+                'color': 'success',
+            },
+        ]
+
+        section_keys = [section['key'] for section in sections]
+
+        if section not in section_keys:
+            if section is None or len(section) == 0:
+                section = 'about'
+            else:
+                raise Http404
+
+        return render(request, 'office/systems/single/about.html', {
+            'section_active': section,
+            'sections': sections,
+            'title': system.name,
             'system': system,
+            'is_mine': is_mine,
+        })
+
+
+class OfficeSystemAdd(View):
+    def get(self, request):
+        sections = [
+            {
+                'title': 'О системе',
+                'key': 'about',
+                'color': 'danger',
+            },
+        ]
+
+        section = 'about'
+
+        return render(request, 'office/systems/single/about.html', {
+            'section_active': section,
+            'sections': sections,
+            'title': 'Создание системы',
+            'system': None,
+            'is_mine': False,
         })
 
 

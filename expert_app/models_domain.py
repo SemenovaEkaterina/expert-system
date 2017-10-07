@@ -57,6 +57,13 @@ class System(models.Model):
 
     objects = SystemManager()
 
+    def is_by_user(self, user):
+        if isinstance(user, int):
+            return self.user.id == user
+
+        if isinstance(user, User):
+            return self.user.id == user.id
+
 
 class Object(models.Model):
     name = models.CharField(max_length=30)

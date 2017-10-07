@@ -19,14 +19,19 @@ from django.conf.urls import url
 from django.conf.urls.static import static
 
 from expert import settings
-from expert_app.views import Home, Login, Signup, Logout, OfficeDashboard, OfficeSystems, OfficeSystemSingle
+from expert_app.views import Home, Login, Signup, Logout, OfficeDashboard, OfficeSystems, OfficeSystemSingle, \
+    OfficeSystemAdd
 
 urlpatterns = [
                   url(r'^login/$', Login.as_view(), name='login'),
                   url(r'^signup/$', Signup.as_view(), name='signup'),
                   url(r'^logout/$', Logout.as_view(), name='logout'),
-                  url(r'^office/systems/(?P<page>\w*)?$', OfficeSystems.as_view(), name='office_systems'),
-                  url(r'^office/system/(?P<sid>[0-9]+)$', OfficeSystemSingle.as_view(), name='office_system'),
+
+                  url(r'^office/systems/add/$', OfficeSystemAdd.as_view(), name='office_system_add'),
+                  url(r'^office/systems/(?P<page>\w*)?/?$', OfficeSystems.as_view(), name='office_systems'),
+                  url(r'^office/system/id/(?P<sid>[0-9]+)/(?P<section>\w+)?/?$', OfficeSystemSingle.as_view(),
+                      name='office_system'),
+
                   url(r'^office/', OfficeDashboard.as_view(), name='office'),
                   url(r'^$', Home.as_view(), name='home'),
               ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
