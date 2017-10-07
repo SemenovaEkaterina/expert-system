@@ -1,0 +1,539 @@
+{% extends 'office/layout.html' %}
+
+{% block title %}Системы{% endblock %}
+{% block breadcrumb_title %}Системы{% endblock %}
+{% block page_title %}Системы{% endblock %}
+
+{% block content %}
+    <div class="todo-app-w">
+        <!--START - To Do SIDEBAR-->
+        <div class="todo-sidebar">
+            <div class="todo-sidebar-section">
+                <h4 class="todo-sidebar-section-header">
+                    My Projects<a class="todo-sidebar-section-toggle" href="#"><i class="os-icon os-icon-ui-23"></i></a>
+                </h4>
+                <div class="todo-sidebar-section-contents">
+                    <ul class="projects-list">
+                        <li>
+                            <a href="#">House Renovation</a>
+                        </li>
+                        <li>
+                            <a href="#">App Development</a>
+                        </li>
+                        <li>
+                            <a href="#">Movies to Watch</a>
+                        </li>
+                        <li class="add-new-project">
+                            <a href="#">Add New Project</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="todo-sidebar-section">
+                <h4 class="todo-sidebar-section-header">
+                    <span>Starred Tasks</span><i class="os-icon os-icon-ui-02 starred"></i><a
+                        class="todo-sidebar-section-toggle" href="#"><i class="os-icon os-icon-ui-23"></i></a>
+                </h4>
+                <div class="todo-sidebar-section-contents">
+                    <div class="todo-sidebar-section-sub-section">
+                        <div class="todo-sidebar-section-sub-section-toggler">
+                            <i class="os-icon os-icon-ui-23"></i>
+                        </div>
+                        <div class="todo-sidebar-section-sub-header">
+                            <i class="os-icon os-icon-documents-11"></i>
+                            <h6>
+                                Projects
+                            </h6>
+                        </div>
+                        <div class="todo-sidebar-section-sub-section-content">
+                            <ul class="items-list">
+                                <li>
+                                    <a href="#">App Development</a>
+                                </li>
+                                <li>
+                                    <a href="#">Movies to Watch</a>
+                                </li>
+                                <li>
+                                    <a href="#">Tasty Food Recipes</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="todo-sidebar-section-sub-section">
+                        <div class="todo-sidebar-section-sub-section-toggler">
+                            <i class="os-icon os-icon-ui-23"></i>
+                        </div>
+                        <div class="todo-sidebar-section-sub-header">
+                            <i class="os-icon os-icon-ui-34"></i>
+                            <h6>
+                                Notes
+                            </h6>
+                        </div>
+                        <div class="todo-sidebar-section-sub-section-content">
+                            <ul class="items-list">
+                                <li>
+                                    <a href="#">Server Credentials</a>
+                                </li>
+                                <li>
+                                    <a href="#">Social Connections</a>
+                                </li>
+                                <li>
+                                    <a href="#">Travel Tips</a>
+                                </li>
+                                <li>
+                                    <a href="#">John's Story</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="todo-sidebar-section-sub-section">
+                        <div class="todo-sidebar-section-sub-section-toggler">
+                            <i class="os-icon os-icon-ui-23"></i>
+                        </div>
+                        <div class="todo-sidebar-section-sub-header">
+                            <i class="os-icon os-icon-ui-21"></i>
+                            <h6>
+                                Tasks
+                            </h6>
+                        </div>
+                        <div class="todo-sidebar-section-sub-section-content">
+                            <ul class="items-list">
+                                <li>
+                                    <a href="#">Rent uhaul truck and order cardboard boxes and other moving supplies</a>
+                                </li>
+                                <li>
+                                    <a href="#">Order new set of tires from tirerack and schedule appointment</a>
+                                </li>
+                                <li>
+                                    <a href="#">Visit Home Depot to find out what is needed to rebuild backyard
+                                        patio</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="todo-sidebar-section">
+                <h4 class="todo-sidebar-section-header">
+                    <span>Due Soon</span><i class="os-icon os-icon-fire fire"></i><a class="todo-sidebar-section-toggle"
+                                                                                     href="#"><i
+                        class="os-icon os-icon-ui-23"></i></a>
+                </h4>
+                <div class="todo-sidebar-section-contents">
+                    <ul class="tasks-list">
+                        <li class="danger">
+                            <a href="#"><strong>Order new drills from…</strong><span>Due in two days</span></a>
+                        </li>
+                        <li class="warning">
+                            <a href="#"><strong>Rent uhaul truck and or…</strong><span>Due in two days</span></a>
+                        </li>
+                        <li class="warning">
+                            <a href="#"><strong>Order new set of tires…</strong><span>Due in two days</span></a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <!--END - To Do SIDEBAR-->
+        <div class="todo-content">
+            <h4 class="todo-content-header">
+                <i class="os-icon os-icon-ui-83"></i><span>Next 7 Days</span>
+            </h4>
+            <div class="all-tasks-w">
+                <div class="tasks-section">
+                    <!--START - TASKS HEADER-->
+                    <div class="tasks-header-w">
+                        <a class="tasks-header-toggler" href="#"><i class="os-icon os-icon-ui-23"></i></a>
+                        <h5 class="tasks-header">
+                            Today
+                        </h5>
+                        <span class="tasks-sub-header">Mon, Sep 23th</span><a class="add-task-btn"
+                                                                              data-target="#taskModal"
+                                                                              data-toggle="modal" href="#"><i
+                            class="os-icon os-icon-ui-22"></i><span>Add Task</span></a>
+                    </div>
+                    <!--END - TASKS HEADER-->
+                    <div class="tasks-list-w">
+                        <div class="tasks-list-header">
+                            High Priority
+                        </div>
+                        <!--START - Tasks List-->
+                        <ul class="tasks-list">
+                            <li class="draggable-task danger">
+                                <div class="todo-task-drag drag-handle">
+                                    <i class="os-icon os-icon-hamburger-menu-2 drag-handle"></i>
+                                </div>
+                                <div class="todo-task">
+                                    <span contenteditable="true">Visit Home Depot to find out what is needed to rebuild backyard patio</span>
+                                    <div class="todo-task-buttons">
+                                        <a class="task-btn-done" href="#"><span>Mark as Complete</span><i
+                                                class="os-icon os-icon-ui-21"></i></a><a class="task-btn-edit"
+                                                                                         data-target="#taskModal"
+                                                                                         data-toggle="modal"
+                                                                                         href="#"><span>Edit</span><i
+                                            class="os-icon os-icon-ui-49"></i></a><a class="task-btn-delete"
+                                                                                     href="#"><span>Delete</span><i
+                                            class="os-icon os-icon-ui-15"></i></a><a class="task-btn-star"
+                                                                                     href="#"><span>Favorite</span><i
+                                            class="os-icon os-icon-ui-02"></i></a>
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="draggable-task warning">
+                                <div class="todo-task-drag drag-handle">
+                                    <i class="os-icon os-icon-hamburger-menu-2 drag-handle"></i>
+                                </div>
+                                <div class="todo-task">
+                                    <span contenteditable="true">Order new drills from amazon sale box</span>
+                                    <div class="todo-task-buttons">
+                                        <a class="task-btn-done" href="#"><span>Mark as Complete</span><i
+                                                class="os-icon os-icon-ui-21"></i></a><a class="task-btn-edit"
+                                                                                         data-target="#taskModal"
+                                                                                         data-toggle="modal"
+                                                                                         href="#"><span>Edit</span><i
+                                            class="os-icon os-icon-ui-49"></i></a><a class="task-btn-delete"
+                                                                                     href="#"><span>Delete</span><i
+                                            class="os-icon os-icon-ui-15"></i></a><a class="task-btn-star"
+                                                                                     href="#"><span>Favorite</span><i
+                                            class="os-icon os-icon-ui-02"></i></a>
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="draggable-task complete">
+                                <div class="todo-task-drag drag-handle">
+                                    <i class="os-icon os-icon-hamburger-menu-2 drag-handle"></i>
+                                </div>
+                                <div class="todo-task">
+                                    <span contenteditable="true">Rent uhaul truck and order cardboard boxes and other moving supplies</span>
+                                    <div class="todo-task-buttons">
+                                        <a class="task-btn-done" href="#"><span>Mark as Complete</span><i
+                                                class="os-icon os-icon-ui-21"></i></a><a class="task-btn-edit"
+                                                                                         data-target="#taskModal"
+                                                                                         data-toggle="modal"
+                                                                                         href="#"><span>Edit</span><i
+                                            class="os-icon os-icon-ui-49"></i></a><a class="task-btn-delete"
+                                                                                     href="#"><span>Delete</span><i
+                                            class="os-icon os-icon-ui-15"></i></a><a class="task-btn-star"
+                                                                                     href="#"><span>Favorite</span><i
+                                            class="os-icon os-icon-ui-02"></i></a>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                        <!--END - Tasks List-->
+                        <div class="tasks-list-header">
+                            Low Priority
+                        </div>
+                        <!--START - Tasks List-->
+                        <ul class="tasks-list">
+                            <li class="draggable-task complete">
+                                <div class="todo-task-drag drag-handle">
+                                    <i class="os-icon os-icon-hamburger-menu-2 drag-handle"></i>
+                                </div>
+                                <div class="todo-task">
+                                    <span contenteditable="true">Make sure car oil level is checked</span>
+                                    <div class="todo-task-buttons">
+                                        <a class="task-btn-done" href="#"><span>Mark as Complete</span><i
+                                                class="os-icon os-icon-ui-21"></i></a><a class="task-btn-edit"
+                                                                                         data-target="#taskModal"
+                                                                                         data-toggle="modal"
+                                                                                         href="#"><span>Edit</span><i
+                                            class="os-icon os-icon-ui-49"></i></a><a class="task-btn-delete"
+                                                                                     href="#"><span>Delete</span><i
+                                            class="os-icon os-icon-ui-15"></i></a><a class="task-btn-star"
+                                                                                     href="#"><span>Favorite</span><i
+                                            class="os-icon os-icon-ui-02"></i></a>
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="draggable-task complete">
+                                <div class="todo-task-drag drag-handle">
+                                    <i class="os-icon os-icon-hamburger-menu-2 drag-handle"></i>
+                                </div>
+                                <div class="todo-task">
+                                    <span contenteditable="true">Order new set of tires from tirerack and schedule appointment</span>
+                                    <div class="todo-task-buttons">
+                                        <a class="task-btn-done" href="#"><span>Mark as Complete</span><i
+                                                class="os-icon os-icon-ui-21"></i></a><a class="task-btn-edit"
+                                                                                         data-target="#taskModal"
+                                                                                         data-toggle="modal"
+                                                                                         href="#"><span>Edit</span><i
+                                            class="os-icon os-icon-ui-49"></i></a><a class="task-btn-delete"
+                                                                                     href="#"><span>Delete</span><i
+                                            class="os-icon os-icon-ui-15"></i></a><a class="task-btn-star"
+                                                                                     href="#"><span>Favorite</span><i
+                                            class="os-icon os-icon-ui-02"></i></a>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <!--END - Tasks List-->
+                <div class="tasks-section">
+                    <div class="tasks-header-w">
+                        <a class="tasks-header-toggler" href="#"><i class="os-icon os-icon-ui-23"></i></a>
+                        <h5 class="tasks-header">
+                            Tomorrow
+                        </h5>
+                        <span class="tasks-sub-header">Tue, Sep 24th</span><a class="add-task-btn"
+                                                                              data-target="#taskModal"
+                                                                              data-toggle="modal" href="#"><i
+                            class="os-icon os-icon-ui-22"></i><span>Add Task</span></a>
+                    </div>
+                    <!--START - Tasks List-->
+                    <div class="tasks-list-w">
+                        <ul class="tasks-list">
+                            <li class="draggable-task danger">
+                                <div class="todo-task-drag drag-handle">
+                                    <i class="os-icon os-icon-hamburger-menu-2 drag-handle"></i>
+                                </div>
+                                <div class="todo-task">
+                                    <span contenteditable="true">Visit Home Depot to find out what is needed to rebuild backyard patio</span>
+                                    <div class="todo-task-buttons">
+                                        <a class="task-btn-done" href="#"><span>Mark as Complete</span><i
+                                                class="os-icon os-icon-ui-21"></i></a><a class="task-btn-edit"
+                                                                                         data-target="#taskModal"
+                                                                                         data-toggle="modal"
+                                                                                         href="#"><span>Edit</span><i
+                                            class="os-icon os-icon-ui-49"></i></a><a class="task-btn-delete"
+                                                                                     href="#"><span>Delete</span><i
+                                            class="os-icon os-icon-ui-15"></i></a><a class="task-btn-star"
+                                                                                     href="#"><span>Favorite</span><i
+                                            class="os-icon os-icon-ui-02"></i></a>
+                                    </div>
+                                </div>
+                                <div class="todo-task-media">
+                                    <img src="img/portfolio9.jpg"><img src="img/portfolio2.jpg"><img
+                                        src="img/portfolio12.jpg">
+                                </div>
+                            </li>
+                            <li class="draggable-task warning">
+                                <div class="todo-task-drag drag-handle">
+                                    <i class="os-icon os-icon-hamburger-menu-2 drag-handle"></i>
+                                </div>
+                                <div class="todo-task">
+                                    <span contenteditable="true">Order new drills from amazon sale box</span>
+                                    <div class="todo-task-buttons">
+                                        <a class="task-btn-done" href="#"><span>Mark as Complete</span><i
+                                                class="os-icon os-icon-ui-21"></i></a><a class="task-btn-edit"
+                                                                                         data-target="#taskModal"
+                                                                                         data-toggle="modal"
+                                                                                         href="#"><span>Edit</span><i
+                                            class="os-icon os-icon-ui-49"></i></a><a class="task-btn-delete"
+                                                                                     href="#"><span>Delete</span><i
+                                            class="os-icon os-icon-ui-15"></i></a><a class="task-btn-star"
+                                                                                     href="#"><span>Favorite</span><i
+                                            class="os-icon os-icon-ui-02"></i></a>
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="draggable-task complete">
+                                <div class="todo-task-drag drag-handle">
+                                    <i class="os-icon os-icon-hamburger-menu-2 drag-handle"></i>
+                                </div>
+                                <div class="todo-task">
+                                    <span contenteditable="true">Make sure car oil level is checked</span>
+                                    <div class="todo-task-buttons">
+                                        <a class="task-btn-done" href="#"><span>Mark as Complete</span><i
+                                                class="os-icon os-icon-ui-21"></i></a><a class="task-btn-edit"
+                                                                                         data-target="#taskModal"
+                                                                                         data-toggle="modal"
+                                                                                         href="#"><span>Edit</span><i
+                                            class="os-icon os-icon-ui-49"></i></a><a class="task-btn-delete"
+                                                                                     href="#"><span>Delete</span><i
+                                            class="os-icon os-icon-ui-15"></i></a><a class="task-btn-star"
+                                                                                     href="#"><span>Favorite</span><i
+                                            class="os-icon os-icon-ui-02"></i></a>
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="draggable-task success favorite">
+                                <div class="todo-task-drag drag-handle">
+                                    <i class="os-icon os-icon-hamburger-menu-2 drag-handle"></i>
+                                </div>
+                                <div class="todo-task">
+                                    <span contenteditable="true">Order new set of tires from tirerack and schedule appointment</span>
+                                    <div class="todo-task-buttons">
+                                        <a class="task-btn-done" href="#"><span>Mark as Complete</span><i
+                                                class="os-icon os-icon-ui-21"></i></a><a class="task-btn-edit"
+                                                                                         data-target="#taskModal"
+                                                                                         data-toggle="modal"
+                                                                                         href="#"><span>Edit</span><i
+                                            class="os-icon os-icon-ui-49"></i></a><a class="task-btn-delete"
+                                                                                     href="#"><span>Delete</span><i
+                                            class="os-icon os-icon-ui-15"></i></a><a class="task-btn-star"
+                                                                                     href="#"><span>Favorite</span><i
+                                            class="os-icon os-icon-ui-02"></i></a>
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="draggable-task complete">
+                                <div class="todo-task-drag drag-handle">
+                                    <i class="os-icon os-icon-hamburger-menu-2 drag-handle"></i>
+                                </div>
+                                <div class="todo-task">
+                                    <span contenteditable="true">Rent uhaul truck and order cardboard boxes and other moving supplies</span>
+                                    <div class="todo-task-buttons">
+                                        <a class="task-btn-done" href="#"><span>Mark as Complete</span><i
+                                                class="os-icon os-icon-ui-21"></i></a><a class="task-btn-edit"
+                                                                                         data-target="#taskModal"
+                                                                                         data-toggle="modal"
+                                                                                         href="#"><span>Edit</span><i
+                                            class="os-icon os-icon-ui-49"></i></a><a class="task-btn-delete"
+                                                                                     href="#"><span>Delete</span><i
+                                            class="os-icon os-icon-ui-15"></i></a><a class="task-btn-star"
+                                                                                     href="#"><span>Favorite</span><i
+                                            class="os-icon os-icon-ui-02"></i></a>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                        <!--END - Tasks List-->
+                    </div>
+                </div>
+                <div class="tasks-section">
+                    <div class="tasks-header-w">
+                        <a class="tasks-header-toggler" href="#"><i class="os-icon os-icon-ui-23"></i></a>
+                        <h5 class="tasks-header">
+                            Wednesday
+                        </h5>
+                        <span class="tasks-sub-header">Wed, Sep 25th</span><a class="add-task-btn"
+                                                                              data-target="#taskModal"
+                                                                              data-toggle="modal" href="#"><i
+                            class="os-icon os-icon-ui-22"></i><span>Add Task</span></a>
+                    </div>
+                    <div class="tasks-list-w">
+                        <ul class="tasks-list">
+                            <li class="draggable-task danger">
+                                <div class="todo-task-drag drag-handle">
+                                    <i class="os-icon os-icon-hamburger-menu-2 drag-handle"></i>
+                                </div>
+                                <div class="todo-task">
+                                    <span contenteditable="true">Make sure car oil level is checked</span>
+                                    <div class="todo-task-buttons">
+                                        <a class="task-btn-done" href="#"><span>Mark as Complete</span><i
+                                                class="os-icon os-icon-ui-21"></i></a><a class="task-btn-edit"
+                                                                                         data-target="#taskModal"
+                                                                                         data-toggle="modal"
+                                                                                         href="#"><span>Edit</span><i
+                                            class="os-icon os-icon-ui-49"></i></a><a class="task-btn-delete"
+                                                                                     href="#"><span>Delete</span><i
+                                            class="os-icon os-icon-ui-15"></i></a><a class="task-btn-star"
+                                                                                     href="#"><span>Favorite</span><i
+                                            class="os-icon os-icon-ui-02"></i></a>
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="draggable-task success">
+                                <div class="todo-task-drag drag-handle">
+                                    <i class="os-icon os-icon-hamburger-menu-2 drag-handle"></i>
+                                </div>
+                                <div class="todo-task">
+                                    <span contenteditable="true">Order new set of tires from tirerack and schedule appointment</span>
+                                    <div class="todo-task-buttons">
+                                        <a class="task-btn-done" href="#"><span>Mark as Complete</span><i
+                                                class="os-icon os-icon-ui-21"></i></a><a class="task-btn-edit"
+                                                                                         data-target="#taskModal"
+                                                                                         data-toggle="modal"
+                                                                                         href="#"><span>Edit</span><i
+                                            class="os-icon os-icon-ui-49"></i></a><a class="task-btn-delete"
+                                                                                     href="#"><span>Delete</span><i
+                                            class="os-icon os-icon-ui-15"></i></a><a class="task-btn-star"
+                                                                                     href="#"><span>Favorite</span><i
+                                            class="os-icon os-icon-ui-02"></i></a>
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="draggable-task complete">
+                                <div class="todo-task-drag drag-handle">
+                                    <i class="os-icon os-icon-hamburger-menu-2 drag-handle"></i>
+                                </div>
+                                <div class="todo-task">
+                                    <span contenteditable="true">Rent uhaul truck and order cardboard boxes and other moving supplies</span>
+                                    <div class="todo-task-buttons">
+                                        <a class="task-btn-done" href="#"><span>Mark as Complete</span><i
+                                                class="os-icon os-icon-ui-21"></i></a><a class="task-btn-edit"
+                                                                                         data-target="#taskModal"
+                                                                                         data-toggle="modal"
+                                                                                         href="#"><span>Edit</span><i
+                                            class="os-icon os-icon-ui-49"></i></a><a class="task-btn-delete"
+                                                                                     href="#"><span>Delete</span><i
+                                            class="os-icon os-icon-ui-15"></i></a><a class="task-btn-star"
+                                                                                     href="#"><span>Favorite</span><i
+                                            class="os-icon os-icon-ui-02"></i></a>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <!--Modal - Edit Task-->
+            <div aria-hidden="true" class="modal fade" id="taskModal" role="dialog" tabindex="-1">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header faded smaller">
+                            <div class="modal-title">
+                                <span>Assigned to:</span><img alt="" class="avatar" src="img/avatar1.jpg"><span>Due Date: </span><strong>Sep
+                                12th, 2017</strong>
+                            </div>
+                            <button aria-label="Close" class="close" data-dismiss="modal" type="button"><span
+                                    aria-hidden="true"> ×</span></button>
+                        </div>
+                        <div class="modal-body">
+                            <form>
+                                <div class="form-group">
+                                    <label for="">Name</label><input class="form-control" placeholder="Enter task name"
+                                                                     type="text"
+                                                                     value="Visit Home Depot to find out what is needed to rebuild backyard patio">
+                                </div>
+                                <div class="form-group">
+                                    <label for="">Description</label><textarea class="form-control" name="" rows="3">The similar diesel only tell deference and likewise, thought, nonetheless, for ahead school. The were organization.</textarea>
+                                </div>
+                                <div class="form-group">
+                                    <label for="">Media Attached</label>
+                                    <div class="attached-media-w">
+                                        <img src="img/portfolio9.jpg"><img src="img/portfolio2.jpg"><img
+                                            src="img/portfolio12.jpg"><a class="attach-media-btn" href="#"><i
+                                            class="os-icon os-icon-ui-22"></i><span>Add Photos</span></a>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            <label for=""> Due Date</label>
+                                            <div class="date-input">
+                                                <input class="single-daterange form-control" placeholder="Date of birth"
+                                                       type="text" value="04/12/1978">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            <label for="">Priority</label><select class="form-control">
+                                            <option>
+                                                High Priority
+                                            </option>
+                                            <option>
+                                                Normal Priority
+                                            </option>
+                                            <option>
+                                                Low Priority
+                                            </option>
+                                        </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="modal-footer buttons-on-left">
+                            <button class="btn btn-teal" type="button"> Save changes</button>
+                            <button class="btn btn-link" data-dismiss="modal" type="button"> Cancel</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

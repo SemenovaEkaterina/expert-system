@@ -1,0 +1,19 @@
+{% extends 'office/layout.html' %}
+
+{% block title %}Страница не найдена{% endblock %}
+{% block breadcrumb_title %}Страница не найдена{% endblock %}
+{% block page_title %}Страница не найдена{% endblock %}
+
+{% block content %}
+    <div style="min-height: 500px; height: 100%">
+        <div class="big-error-w">
+            <h1>
+                {{ error_code |default:404 }}
+            </h1>
+            <h5>
+                {{ error_title |default:'Страница не найдена' }}
+            </h5>
+            <a href="{% url 'home' %}" class="btn btn-block btn-secondary">Вернуться на главную</a>
+        </div>
+    </div>
+{% endblock %}

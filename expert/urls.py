@@ -16,13 +16,20 @@ Including another URLconf
 from django.conf.urls import url
 
 # from django.contrib import admin
-from expert_app.views import Home, Login, Signup, Logout, OfficeDashboard, OfficeSystems
+from django.conf.urls.static import static
+
+from expert import settings
+from expert_app.views import Home, Login, Signup, Logout, OfficeDashboard, OfficeSystems, OfficeSystemSingle
 
 urlpatterns = [
-    url(r'^login/$', Login.as_view(), name='login'),
-    url(r'^signup/$', Signup.as_view(), name='signup'),
-    url(r'^logout/$', Logout.as_view(), name='logout'),
-    url(r'^office/systems/(?P<page>\w*)?$', OfficeSystems.as_view(), name='office_systems'),
-    url(r'^office/', OfficeDashboard.as_view(), name='office'),
-    url(r'^$', Home.as_view(), name='home'),
-]
+                  url(r'^login/$', Login.as_view(), name='login'),
+                  url(r'^signup/$', Signup.as_view(), name='signup'),
+                  url(r'^logout/$', Logout.as_view(), name='logout'),
+                  url(r'^office/systems/(?P<page>\w*)?$', OfficeSystems.as_view(), name='office_systems'),
+                  url(r'^office/system/(?P<sid>[0-9]+)$', OfficeSystemSingle.as_view(), name='office_system'),
+                  url(r'^office/', OfficeDashboard.as_view(), name='office'),
+                  url(r'^$', Home.as_view(), name='home'),
+              ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+handler404 = 'expert_app.views.handler404'
+handler500 = 'expert_app.views.handler500'

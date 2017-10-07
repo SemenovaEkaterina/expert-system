@@ -1,13 +1,15 @@
 from django.contrib import auth
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponseRedirect
-from django.shortcuts import render, redirect
+from django.http import HttpResponseRedirect, HttpResponse
+from django.shortcuts import render, redirect, render_to_response
+from django.template import RequestContext
 from django.urls import reverse
 from django.utils.decorators import method_decorator
+from django.shortcuts import get_object_or_404
 
 from django.views import View
 
-from expert_app.models import SignupForm, LoginForm
+from expert_app.models import SignupForm, LoginForm, System
 
 
 def need_login(func):
@@ -93,6 +95,47 @@ class OfficeSystems(View):
         if page not in ['mine', 'all']:
             page = 'mine'
 
+        system = System()
+        system.name = 'Test'
+        system.user = request.user
+        system.author = 'Author of the system'
+        system.description = 'Description'
+        system.public = True
+
+        lst = [
+            system,
+            system
+        ]
+
         return render(request, 'office/systems.html', {
             'page': page,
+            'systems': lst
         })
+
+
+class OfficeSystemSingle(View):
+    def get(self, request, sid):
+        system = get_object_or_404(System, pk=sid)
+
+        return render(request, 'office/systems_single.html', {
+        })
+
+
+def handler404(request):
+    response = render_to_response('error.html', {
+        'request': request,
+        'error_code': 404,
+        'error_title': 'Страница не найдена!',
+    })
+    response.status_code = 404
+    return response
+
+
+def handler500(request):
+    response = render_to_response('error.html', {
+        'request': request,
+        'error_code': 500,
+        'error_title': 'Ошибочка вышла',
+    })
+    response.status_code = 500
+    return response
