@@ -4,6 +4,14 @@ from __future__ import unicode_literals
 from django.db import models
 from django.contrib.auth.models import User
 
+class SystemManager(models.Manager):
+    @staticmethod
+    def get_by_user(user_id):
+        return System.objects.filter(user__id=user_id).order_by('name')
+
+    @staticmethod
+    def all(public):
+        return System.objects.filter(public=public).order_by('name')
 
 class System(models.Model):
     name = models.CharField(max_length=30)
@@ -12,6 +20,8 @@ class System(models.Model):
     description = models.TextField(default="Описание")
     image = models.ImageField(upload_to='upload/', blank=True, null=True)
     public = models.BooleanField(default=False)
+    systems = SystemManager()
+    objects = models.Manager()
 
 
 class Object(models.Model):
