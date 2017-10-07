@@ -1,5 +1,6 @@
 from django.contrib import auth
 from django.contrib.auth.decorators import login_required
+from django.forms import model_to_dict
 from django.http import HttpResponseRedirect, HttpResponse, Http404
 from django.shortcuts import render, redirect, render_to_response
 from django.template import RequestContext
@@ -9,7 +10,7 @@ from django.shortcuts import get_object_or_404
 
 from django.views import View
 
-from expert_app.models import SignupForm, LoginForm, System
+from expert_app.models import SignupForm, LoginForm, System, SystemForm
 
 
 def need_login(func):
@@ -112,58 +113,120 @@ class OfficeSystems(View):
 
 
 class OfficeSystemSingle(View):
-    def get(self, request, sid, section='about'):
-        system = get_object_or_404(System, pk=sid)
-        is_mine = system.is_by_user(request.user)
-
-        sections = [
+    def get_sections(self):
+        return [
             {
                 'title': 'О системе',
                 'key': 'about',
                 'color': 'danger',
+                'class': OfficeSystemAbout,
             },
             {
                 'title': 'Атрибуты объектов',
                 'key': 'attrs',
                 'color': 'warning',
+                'class': OfficeSystemAttrs,
             },
             {
                 'title': 'Объекты',
                 'key': 'objects',
                 'color': 'warning',
+                'class': OfficeSystemObjects,
             },
             {
                 'title': 'Параметры',
                 'key': 'params',
                 'color': 'success',
+                'class': OfficeSystemParams,
             },
             {
                 'title': 'Вопросы',
                 'key': 'questions',
                 'color': 'success',
+                'class': OfficeSystemQuestions,
             },
             {
                 'title': 'Правила',
                 'key': 'rules',
                 'color': 'success',
+                'class': OfficeSystemRules,
             },
         ]
 
+    def detect_section(self, section):
+        sections = self.get_sections()
         section_keys = [section['key'] for section in sections]
 
         if section not in section_keys:
-            if section is None or len(section) == 0:
-                section = 'about'
-            else:
-                raise Http404
+            return (section_keys or [None])[0]
 
-        return render(request, 'office/systems/single/about.html', {
+        return section
+
+    def get_section_data(self, section):
+        for s in self.get_sections():
+            if s['key'] == section:
+                return s
+
+        return None
+
+    def get(self, request, sid, section='about'):
+        system = get_object_or_404(System, pk=sid)
+        is_mine = system.is_by_user(request.user)
+
+        sections = self.get_sections()
+        section = self.detect_section(section)
+
+        if section is None:
+            raise Http404
+
+        data = {
             'section_active': section,
             'sections': sections,
             'title': system.name,
             'system': system,
             'is_mine': is_mine,
+        }
+
+        section_data = self.get_section_data(section)
+        klass = section_data['class']
+
+        obj = klass()
+        return obj.get(request, data)
+
+
+class OfficeSystemAbout(View):
+    def get(self, request, data):
+        form = SystemForm(model_to_dict(data['system']))
+        data.update({
+            'form': form,
         })
+
+        return render(request, 'office/systems/single/about.html', data)
+
+
+class OfficeSystemAttrs(View):
+    def get(self, request, data):
+        return render(request, 'office/systems/single/about.html', data)
+
+
+class OfficeSystemObjects(View):
+    def get(self, request, data):
+        return render(request, 'office/systems/single/about.html', data)
+
+
+class OfficeSystemParams(View):
+    def get(self, request, data):
+        return render(request, 'office/systems/single/about.html', data)
+
+
+class OfficeSystemQuestions(View):
+    def get(self, request, data):
+        return render(request, 'office/systems/single/about.html', data)
+
+
+class OfficeSystemRules(View):
+    def get(self, request, data):
+        return render(request, 'office/systems/single/about.html', data)
 
 
 class OfficeSystemAdd(View):
@@ -177,6 +240,8 @@ class OfficeSystemAdd(View):
         ]
 
         section = 'about'
+
+        form = SystemForm()
 
         return render(request, 'office/systems/single/about.html', {
             'section_active': section,
