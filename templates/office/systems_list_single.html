@@ -2,7 +2,7 @@
     <div class="project-head">
         <div class="project-title">
             <h5>
-                {{ system.name }}
+                <a href="{% url 'office_system' sid=system.id %}">{{ system.name }}</a>
             </h5>
         </div>
     </div>

@@ -129,6 +129,7 @@
                 <li class="breadcrumb-item">
                     <a href="{% url 'office' %}">Кабинет</a>
                 </li>
+                {% block breadcrumbs %}{% endblock %}
                 <li class="breadcrumb-item">
                     <span>{% block breadcrumb_title %}{% endblock %}</span>
                 </li>

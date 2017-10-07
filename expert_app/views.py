@@ -113,6 +113,7 @@ class OfficeSystemSingle(View):
         system = get_object_or_404(System, pk=sid)
 
         return render(request, 'office/systems_single.html', {
+            'system': system,
         })
 
 

@@ -1,7 +1,12 @@
 {% extends 'office/layout.html' %}
 
 {% block title %}Системы{% endblock %}
-{% block breadcrumb_title %}Системы{% endblock %}
+{% block breadcrumbs %}
+    <li class="breadcrumb-item">
+        <a href="{% url 'office_systems' %}">Системы</a>
+    </li>
+{% endblock %}
+{% block breadcrumb_title %}{{ system.name }}{% endblock %}
 {% block page_title %}Системы{% endblock %}
 
 {% block content %}
