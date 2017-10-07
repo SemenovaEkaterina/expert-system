@@ -54,6 +54,7 @@ class System(models.Model):
     image = models.ImageField(upload_to='system_images/', blank=True, null=True)
     public = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
+    slug = models.CharField(max_length=30, default='')
 
     objects = SystemManager()
 

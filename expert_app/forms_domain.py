@@ -9,6 +9,13 @@ class SystemForm(forms.Form):
         max_length=100,
         label=u'Название'
     )
+    slug = forms.CharField(
+        widget=forms.TextInput(
+            attrs={'class': 'form-control', 'placeholder': 'super-system', }
+        ),
+        max_length=30,
+        label=u'slug (для URL)'
+    )
     description = forms.CharField(
         widget=forms.Textarea(
             attrs={'class': 'form-control', 'rows': '3', }
