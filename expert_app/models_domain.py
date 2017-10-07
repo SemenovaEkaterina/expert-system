@@ -4,6 +4,7 @@ from __future__ import unicode_literals
 from django.db import models
 from django.contrib.auth.models import User
 
+
 class SystemManager(models.Manager):
     @staticmethod
     def get_by_user(user_id):
@@ -25,9 +26,17 @@ class System(models.Model):
     objects = models.Manager()
 
 
+class ObjectManager(models.Manager):
+    @staticmethod
+    def get_count(system_id):
+        return Object.objects.filter(system__id=system_id).count()
+
+
 class Object(models.Model):
     name = models.CharField(max_length=30)
     system = models.ForeignKey(System, blank=True, null=True)
+    objs = ObjectManager()
+    objects = models.Manager()
 
 
 class Attribute(models.Model):
@@ -60,10 +69,18 @@ class ParameterValue(models.Model):
     parameter = models.ForeignKey(Parameter)
 
 
+class QuestionManager(models.Manager):
+    @staticmethod
+    def get_count(system_id):
+        return Question.objects.filter(system__id=system_id).count()
+
+
 class Question(models.Model):
     text = models.CharField(max_length=60)
     type = models.IntegerField()
     system = models.ForeignKey(System, blank=True, null=True)
+    questions = QuestionManager()
+    objects = models.Manager()
 
 
 class Answer(models.Model):
