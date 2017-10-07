@@ -24,11 +24,14 @@ class SystemQuerySet(models.QuerySet):
     def order_by_name(self):
         return self.order_by('name')
 
+    def order_by_created_at(self):
+        return self.order_by('created_at')
+
 
 class SystemManager(models.Manager):
     def get_queryset(self):
         res = SystemQuerySet(self.model, using=self._db)
-        return res.with_counters().order_by_name()
+        return res.with_counters()
 
     def get_by_user(self, user):
         q = self.get_queryset()
@@ -38,6 +41,10 @@ class SystemManager(models.Manager):
         q = self.get_queryset()
         return q.with_public(public)
 
+    def all_front(self):
+        q = self.get_queryset()
+        return q.order_by_created_at()
+
 
 class System(models.Model):
     name = models.CharField(max_length=30)
@@ -46,6 +53,7 @@ class System(models.Model):
     description = models.TextField(default="")
     image = models.ImageField(upload_to='system_images/', blank=True, null=True)
     public = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
 
     objects = SystemManager()
 
