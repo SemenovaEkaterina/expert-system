@@ -2,17 +2,20 @@
 from __future__ import unicode_literals
 
 from django.db import models
+from django.db.models import Count
 from django.contrib.auth.models import User
 
 
 class SystemManager(models.Manager):
     @staticmethod
     def get_by_user(user_id):
-        return System.objects.filter(user__id=user_id).order_by('name')
+        return System.objects.filter(user__id=user_id).order_by('name').annotate(objects_count=Count('object'),
+                                                                                 questions_count=Count('question'))
 
     @staticmethod
     def all(public):
-        return System.objects.filter(public=public).order_by('name')
+        return System.objects.filter(public=public).order_by('name').annotate(objects_count=Count('object'),
+                                                                              questions_count=Count('question'))
 
 
 class System(models.Model):
