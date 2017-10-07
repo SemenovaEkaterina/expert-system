@@ -9,8 +9,8 @@ class System(models.Model):
     name = models.CharField(max_length=30)
     user = models.ForeignKey(User)  # пользователь-создатель
     author = models.CharField(max_length=100)  # как отображать автора
-    description = models.TextField()
-    image = models.ImageField(upload_to='upload/')
+    description = models.TextField(default="Описание")
+    image = models.ImageField(upload_to='upload/', blank=True, null=True)
     public = models.BooleanField(default=False)
 
 
