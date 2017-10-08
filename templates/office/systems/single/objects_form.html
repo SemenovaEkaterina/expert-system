@@ -33,12 +33,54 @@
                 <label for="{{ form.image.id_for_label }}">{{ form.image.label }}</label><br/>{{ form.image }}
             </div>
         </fieldset>
+        <fieldset class="form-group">
+            <legend><span>Атрибуты</span></legend>
+            {% for attr in attrs %}
+                <div class="form-group row expert-object-attr-row" data-oaid="{{ attr.attr.id }}">
+                    <label class="col-sm-4 col-form-label" for="">{{ attr.attr.name }}</label>
+                    <div class="col-sm-8">
+                        {% for val in attr.allowed_vals %}
+                            <button data-oavid="{{ val.val.id }}" href="#"
+                                    class="mr-2 mb-2 btn btn{% if not val.active %}-outline{% endif %}-secondary expert-object-attr-val">{{ val.val.value }}</button>
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endfor %}
+        </fieldset>
+        {{ form.attrs }}
         <div class="form-buttons-w">
-            <button class="btn btn-lg btn-primary" type="submit">Сохранить</button>
+            <button class="btn btn-lg btn-primary expert-object-save" type="submit">Сохранить</button>
             <div class="form-check-inline">
                 <a href="{% url 'office_system' sid=system.id section='objects' %}"
                    class="btn btn-sm btn-outline-primary ml-3">вернуться</a>
             </div>
         </div>
     </form>
+{% endblock %}
+
+{% block scripts %}
+    <script>
+        $(function () {
+            var attrs_field = '{{ form.attrs.id_for_label }}';
+            $('.expert-object-attr-val').click(function (e) {
+                e.preventDefault();
+                $(this).parents('.expert-object-attr-row').find('.expert-object-attr-val').removeClass('btn-secondary').addClass('btn-outline-secondary');
+                $(this).removeClass('btn-outline-secondary').addClass('btn-secondary');
+            });
+
+            $('.expert-object-save').click(function () {
+                var attrs = [];
+                $('.expert-object-attr-row').each(function () {
+                    var $active = $(this).find('.btn-secondary').first();
+
+                    attrs.push({
+                        'attr_id': $(this).data('oaid'),
+                        'attr_value_id': $active.data('oavid')
+                    });
+                });
+
+                $('#{{ form.attrs.id_for_label }}').val(JSON.stringify(attrs));
+            })
+        });
+    </script>
 {% endblock %}

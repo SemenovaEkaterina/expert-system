@@ -2,6 +2,9 @@
 
 {% block page_content %}
     <div class="form-desc">Создайте объекты, укажите значения их атрибутов.</div>
+
+    <a href="{% url 'office_system' sid=system.id section='objects' %}?object_id=new"
+       class="btn btn-secondary float-right">Добавить объект</a>
     <div class="table-responsive">
         <table class="table table-lightborder">
             <thead>
@@ -32,9 +35,6 @@
             </tbody>
         </table>
     </div>
-
-    <a href="{% url 'office_system' sid=system.id section='objects' %}?object_id=new"
-       class="btn btn-secondary float-right">Добавить объект</a>
 {% endblock %}
 
 {% block scripts %}

@@ -328,12 +328,34 @@ class OfficeSystemObjects(OfficeSystemBase):
                 obj = get_object_or_404(Object, pk=object_id)
                 form = ObjectForm(initial=model_to_dict(obj))
 
+            object_attrs = []
             if object_id != 'new':
                 obj = get_object_or_404(Object, pk=object_id)
                 form.set_object(obj)
+                object_attrs = list(obj.objectattributevalue_set.all())
 
             form.set_system(system)
             data['form'] = form
+
+            attrs = system.attribute_set.prefetch_related('attributeallowedvalue_set').all()
+
+            attrs_data = []
+            for attr in attrs:
+                active = None
+                for oav in object_attrs:
+                    if oav.attribute_id == attr.id:
+                        active = oav.attribute_value_id
+                        break
+
+                allowed = [{'val': val, 'active': val.id == active} for val in attr.attributeallowedvalue_set.all()]
+                attrs_data.append({
+                    'attr': attr,
+                    'allowed_vals': allowed,
+                })
+
+            data['attrs'] = attrs_data
+
+            print(attrs_data)
 
             if request.method == 'POST':
                 if form.is_valid():

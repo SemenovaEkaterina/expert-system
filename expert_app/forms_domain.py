@@ -1,7 +1,8 @@
+import json
 import time
 from django import forms
 
-from expert_app.models_domain import System, Object
+from expert_app.models import System, Object, ObjectAttributeValue, Attribute
 
 
 class SystemForm(forms.Form):
@@ -116,6 +117,9 @@ class ObjectForm(forms.Form):
             attrs={'class': 'form-control', }),
         required=False, label=u'Изображение'
     )
+    attrs = forms.CharField(
+        widget=forms.HiddenInput()
+    )
 
     system = None
     object = None
@@ -147,5 +151,17 @@ class ObjectForm(forms.Form):
             obj.image.save('%s_%s' % (time.time(), image.name), image, save=True)
 
         obj.save()
+
+        attrs = json.loads(data.get('attrs', '[]'))
+
+        for oav in obj.objectattributevalue_set.all():
+            oav.delete()
+
+        for attr in attrs:
+            oav = ObjectAttributeValue()
+            oav.object = obj
+            oav.attribute = Attribute.objects.get(pk=attr['attr_id'])
+            oav.attribute_value = oav.attribute.attributeallowedvalue_set.get(pk=attr['attr_value_id'])
+            oav.save()
 
         return obj
