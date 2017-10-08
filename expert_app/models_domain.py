@@ -15,6 +15,9 @@ class SystemQuerySet(models.QuerySet):
     def by_user(self, user):
         return self.filter(user=user)
 
+    def by_slug(self, slug):
+        return self.filter(slug=slug)
+
     def with_public(self, val=None):
         if val is None:
             return self
@@ -37,6 +40,10 @@ class SystemManager(models.Manager):
         q = self.get_queryset()
         return q.by_user(user)
 
+    def get_by_slug(self, slug):
+        q = self.get_queryset()
+        return q.by_slug(slug)
+
     def all(self, public=None):
         q = self.get_queryset()
         return q.with_public(public)
@@ -54,7 +61,7 @@ class System(models.Model):
     image = models.ImageField(upload_to='system_images/', blank=True, null=True)
     public = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
-    slug = models.CharField(max_length=30, default='')
+    slug = models.CharField(max_length=30, default='', unique=True)
 
     objects = SystemManager()
 

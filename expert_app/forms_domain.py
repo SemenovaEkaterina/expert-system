@@ -1,4 +1,7 @@
+import time
 from django import forms
+
+from expert_app.models_domain import System
 
 
 class SystemForm(forms.Form):
@@ -38,5 +41,57 @@ class SystemForm(forms.Form):
         widget=forms.CheckboxInput(
             attrs={'class': 'form-control', }
         ),
+        required=False,
         label=u'Доступна всем'
     )
+
+    system = None
+
+    def set_system(self, system):
+        self.system = system
+
+    def clean_slug(self):
+        slug = self.cleaned_data.get('slug', '')
+        slugged_system = System.objects.get_by_slug(slug)
+
+        if not slugged_system:
+            return slug
+
+        slugged_system = slugged_system.all()[:1].get()
+
+        if self.system is None or slugged_system.id != self.system.id:
+            raise forms.ValidationError(u'Такой slug уже занят')
+
+        return slug
+
+    def save(self, user):
+        data = self.cleaned_data
+
+        name = data.get('name')
+        description = data.get('description')
+        author = data.get('author')
+        slug = data.get('slug')
+        image = data.get('image')
+        public = data.get('public')
+
+        if self.system:
+            system = self.system
+        else:
+            system = System()
+            system.user = user
+
+        system.name = name
+        system.description = description
+        system.author = author
+        system.slug = slug
+        system.public = public
+
+        if image is not None:
+            if not image:
+                system.image.delete(save=True)
+            else:
+                system.image.save('%s_%s' % (slug, image.name), image, save=True)
+
+        system.save()
+
+        return system

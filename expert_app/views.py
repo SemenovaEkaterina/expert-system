@@ -104,7 +104,7 @@ class OfficeSystems(View):
         if page == 'mine':
             lst = System.objects.get_by_user(request.user)
         elif page == 'all':
-            lst = System.objects.all(True)
+            lst = System.objects.all()
 
         return render(request, 'office/systems/list/page.html', {
             'page': page,
@@ -169,7 +169,7 @@ class OfficeSystemSingle(View):
 
         return None
 
-    def get(self, request, sid, section='about'):
+    def handle(self, request, sid, section='about'):
         system = get_object_or_404(System, pk=sid)
         is_mine = system.is_by_user(request.user)
 
@@ -191,46 +191,74 @@ class OfficeSystemSingle(View):
         klass = section_data['class']
 
         obj = klass()
-        return obj.get(request, data)
+        return obj.handle(request, data)
+
+    def get(self, *args, **kwargs):
+        return self.handle(*args, **kwargs)
+
+    def post(self, *args, **kwargs):
+        return self.handle(*args, **kwargs)
 
 
-class OfficeSystemAbout(View):
+class OfficeSystemBase(View):
+    def handle(self, request, data):
+        pass
+
     def get(self, request, data):
-        form = SystemForm(model_to_dict(data['system']))
+        return self.handle(request, data)
+
+    def post(self, request, data):
+        return self.handle(request, data)
+
+
+class OfficeSystemAbout(OfficeSystemBase):
+    def handle(self, request, data):
+        if request.method == 'POST':
+            form = SystemForm(request.POST, request.FILES)
+        else:
+            form = SystemForm(initial=model_to_dict(data['system']))
+
+        form.set_system(data['system'])
         data.update({
             'form': form,
         })
 
+        if request.method == 'POST':
+            if form.is_valid():
+                system = form.save(request.user)
+                return HttpResponseRedirect(
+                    reverse('office_system', kwargs={'sid': system.id, 'section': 'about'}))
+
         return render(request, 'office/systems/single/about.html', data)
 
 
-class OfficeSystemAttrs(View):
-    def get(self, request, data):
+class OfficeSystemAttrs(OfficeSystemBase):
+    def handle(self, request, data):
         return render(request, 'office/systems/single/about.html', data)
 
 
-class OfficeSystemObjects(View):
-    def get(self, request, data):
+class OfficeSystemObjects(OfficeSystemBase):
+    def handle(self, request, data):
         return render(request, 'office/systems/single/about.html', data)
 
 
-class OfficeSystemParams(View):
-    def get(self, request, data):
+class OfficeSystemParams(OfficeSystemBase):
+    def handle(self, request, data):
         return render(request, 'office/systems/single/about.html', data)
 
 
-class OfficeSystemQuestions(View):
-    def get(self, request, data):
+class OfficeSystemQuestions(OfficeSystemBase):
+    def handle(self, request, data):
         return render(request, 'office/systems/single/about.html', data)
 
 
-class OfficeSystemRules(View):
-    def get(self, request, data):
+class OfficeSystemRules(OfficeSystemBase):
+    def handle(self, request, data):
         return render(request, 'office/systems/single/about.html', data)
 
 
 class OfficeSystemAdd(View):
-    def get(self, request):
+    def handle(self, request):
         sections = [
             {
                 'title': 'О системе',
@@ -243,13 +271,28 @@ class OfficeSystemAdd(View):
 
         form = SystemForm()
 
+        if request.method == 'POST':
+            form = SystemForm(request.POST, request.FILES)
+            if form.is_valid():
+                system = form.save(request.user)
+
+                return HttpResponseRedirect(
+                    reverse('office_system', kwargs={'sid': system.id, 'section': 'about'}))
+
         return render(request, 'office/systems/single/about.html', {
             'section_active': section,
             'sections': sections,
             'title': 'Создание системы',
             'system': None,
             'is_mine': False,
+            'form': form,
         })
+
+    def get(self, request):
+        return self.handle(request)
+
+    def post(self, request):
+        return self.handle(request)
 
 
 def handler404(request):
