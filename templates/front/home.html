@@ -132,12 +132,15 @@
                             {{ system.name }}
                         </div>
                         <div class="demo-shot-w">
-                            <div class="demo-shot" style="background-image: url({% if system.image %}{{ system.image.url }}{% else %}{% static 'img/front/system.jpg' %}{% endif %})"></div>
+                            <div class="demo-shot" style="background-image: url(
+                                    {% if system.image %}{{ system.image.url }}{% else %}{% static 'img/front/system.jpg' %}{% endif %})"></div>
                         </div>
                     </a>
                 </div>
             {% empty %}
-                <h3>Упс, системы еще в разработке.</h3>
+                <div class="col-sm-12">
+                    <h3 class="text-sm-center">Упс, системы еще в разработке.</h3>
+                </div>
             {% endfor %}
         </div>
     </div>

@@ -6,6 +6,14 @@ from django.db.models import Count
 from django.contrib.auth.models import User
 
 
+class BaseModel(models.Model):
+    created_at = models.DateTimeField(auto_now_add=True)
+    modified_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        abstract = True
+
+
 class SystemQuerySet(models.QuerySet):
     def with_counters(self):
         return self.annotate(objects_count=Count('object', distinct=True),
@@ -53,14 +61,13 @@ class SystemManager(models.Manager):
         return q.order_by_created_at().with_public(True)
 
 
-class System(models.Model):
+class System(BaseModel):
     name = models.CharField(max_length=100)
     user = models.ForeignKey(User)  # пользователь-создатель
     author = models.CharField(max_length=100)  # как отображать автора
     description = models.TextField(default="")
     image = models.ImageField(upload_to='system_images/', blank=True, null=True)
     public = models.BooleanField(default=False)
-    created_at = models.DateTimeField(auto_now_add=True)
     slug = models.CharField(max_length=30, default='', unique=True)
 
     objects = SystemManager()
@@ -73,65 +80,78 @@ class System(models.Model):
             return self.user.id == user.id
 
 
-class Object(models.Model):
-    name = models.CharField(max_length=30)
-    system = models.ForeignKey(System, blank=True, null=True)
+class Attribute(BaseModel):
+    name = models.CharField(max_length=50)
+    order = models.IntegerField(default=0)
+    system = models.ForeignKey(System)
 
 
-class Attribute(models.Model):
-    name = models.CharField(max_length=30)
-    system = models.ForeignKey(System, blank=True, null=True)
-
-
-class AttributeValue(models.Model):
-    value = models.CharField(max_length=30)
+class AttributeAllowedValue(BaseModel):
+    value = models.CharField(max_length=50)
+    order = models.IntegerField(default=0)
     attribute = models.ForeignKey(Attribute)
 
 
-class ObjectAttrValues(models.Model):
+class Object(BaseModel):
+    name = models.CharField(max_length=50)
+    order = models.IntegerField(default=0)
+    system = models.ForeignKey(System)
+
+
+class ObjectAttributeValue(BaseModel):
     object = models.ForeignKey(Object)
-    attr_value = models.ForeignKey(AttributeValue)
-
-
-class ObjectAttributes(models.Model):
+    order = models.IntegerField(default=0)
     attribute = models.ForeignKey(Attribute)
-    object = models.ForeignKey(Object)
+    attribute_value = models.ForeignKey(AttributeAllowedValue)
 
 
-class Parameter(models.Model):
-    name = models.CharField(max_length=30)
-    system = models.ForeignKey(System, blank=True, null=True)
+class Parameter(BaseModel):
+    TYPE_PREDEF = 0
+    TYPE_ANY = 1
+    TYPES = [
+        (TYPE_PREDEF, 'Заранее определенные значения'),
+        (TYPE_ANY, 'Любые значения'),
+    ]
+
+    name = models.CharField(max_length=50)
+    type = models.IntegerField(choices=TYPES, default=TYPE_PREDEF)
+    order = models.IntegerField(default=0)
+    system = models.ForeignKey(System)
 
 
-class ParameterValue(models.Model):
-    value = models.CharField(max_length=30)
+class ParameterValue(BaseModel):
+    value = models.CharField(max_length=50)
+    order = models.IntegerField(default=0)
     parameter = models.ForeignKey(Parameter)
 
 
-class QuestionManager(models.Manager):
-    @staticmethod
-    def get_count(system_id):
-        return Question.objects.filter(system__id=system_id).count()
-
-
-class Question(models.Model):
-    text = models.CharField(max_length=60)
-    type = models.IntegerField()
-    system = models.ForeignKey(System, blank=True, null=True)
-    questions = QuestionManager()
-    objects = models.Manager()
-
-
-class Answer(models.Model):
-    answer = models.CharField(max_length=30)
-    compare = models.IntegerField(blank=True, null=True)
+class Question(BaseModel):
+    TYPE_PREDEF = 0
+    TYPE_INT = 1
+    TYPE_STRING = 2
+    TYPES = [
+        (TYPE_PREDEF, 'Заранее определенные значения'),
+        (TYPE_INT, 'Число'),
+        (TYPE_STRING, 'Строка'),
+    ]
+    name = models.CharField(max_length=100)
+    type = models.IntegerField(choices=TYPES, default=TYPE_PREDEF)
     parameter = models.ForeignKey(Parameter)
+    order = models.IntegerField(default=0)
+    system = models.ForeignKey(System)
+
+
+class Answer(BaseModel):
+    name = models.CharField(max_length=50)
     parameter_value = models.ForeignKey(ParameterValue)
+    order = models.IntegerField(default=0)
     question = models.ForeignKey(Question)
 
 
-class Rule(models.Model):
+###############################
+class Rule(BaseModel):
     data = models.TextField()
+    order = models.IntegerField()
     system = models.ForeignKey(System, blank=True, null=True)
 
 

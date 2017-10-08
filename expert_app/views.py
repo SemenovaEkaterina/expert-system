@@ -171,6 +171,9 @@ class OfficeSystemSingle(View):
         system = get_object_or_404(System, pk=sid)
         is_mine = system.is_by_user(request.user)
 
+        if not is_mine:
+            raise Http404
+
         sections = self.get_sections()
         section = self.detect_section(section)
 
