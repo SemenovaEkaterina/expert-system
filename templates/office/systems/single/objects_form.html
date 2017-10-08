@@ -1,7 +1,7 @@
 {% extends 'office/systems/single/page.html' %}
 
 {% block page_content %}
-    <div class="form-desc">Заполните основную информацию о создаваемой системе.</div>
+    <div class="form-desc">Заполните основную информацию об объекте и укажите значения его атрибутов.</div>
     {% for e in form.non_field_errors %}
         <div class="alert alert-danger" role="alert">
             <strong>Ошибка! </strong>{{ e }}
@@ -26,17 +26,6 @@
         <div class="form-group{% if form.description.errors %} has-error has-danger{% endif %}">
             <label for="{{ form.description.id_for_label }}">{{ form.description.label }}</label>{{ form.description }}
         </div>
-        <div class="form-group{% if form.author.errors %} has-error has-danger{% endif %}">
-            <label for="{{ form.author.id_for_label }}">{{ form.author.label }}</label>{{ form.author }}
-        </div>
-
-        <div class="form-group{% if form.slug.errors %} has-error has-danger{% endif %}">
-            <label for="{{ form.slug.id_for_label }}">{{ form.slug.label }}</label>
-            <div class="input-group">
-                <div class="input-group-addon">/</div>
-                {{ form.slug }}
-            </div>
-        </div>
 
         <fieldset class="form-group">
             <legend><span>Оформление</span></legend>
@@ -44,14 +33,12 @@
                 <label for="{{ form.image.id_for_label }}">{{ form.image.label }}</label><br/>{{ form.image }}
             </div>
         </fieldset>
-        <fieldset class="form-group{% if form.public.errors %} has-error has-danger{% endif %}">
-            <legend><span>Доступ</span></legend>
-            <div class="form-check">
-                <label class="form-check-label">{{ form.public }} {{ form.public.label }}</label>
-            </div>
-        </fieldset>
         <div class="form-buttons-w">
-            <button class="btn btn-primary" type="submit">Сохранить</button>
+            <button class="btn btn-lg btn-primary" type="submit">Сохранить</button>
+            <div class="form-check-inline">
+                <a href="{% url 'office_system' sid=system.id section='objects' %}"
+                   class="btn btn-sm btn-outline-primary ml-3">вернуться</a>
+            </div>
         </div>
     </form>
 {% endblock %}

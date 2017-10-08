@@ -1,4 +1,60 @@
 {% extends 'office/systems/single/page.html' %}
 
 {% block page_content %}
+    <div class="form-desc">Создайте объекты, укажите значения их атрибутов.</div>
+    <div class="table-responsive">
+        <table class="table table-lightborder">
+            <thead>
+            <tr>
+                <th>
+                    Объект
+                </th>
+                <th>
+                    Действия
+                </th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for obj in objects %}
+                <tr>
+                    <td>
+                        <a href="{% url 'office_system' sid=system.id section='objects' %}?object_id={{ obj.id }}">{{ obj.name }}</a>
+                    </td>
+                    <td>
+                        <a href="{% url 'office_system' sid=system.id section='objects' %}?object_id={{ obj.id }}"
+                           class="btn btn-sm btn-info">Изменить</a>
+                        <a href="{% url 'office_system' sid=system.id section='objects' %}?object_id={{ obj.id }}&action=delete"
+                           class="btn btn-sm btn-warning expert-object-delete">Удалить</a>
+                    </td>
+
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <a href="{% url 'office_system' sid=system.id section='objects' %}?object_id=new"
+       class="btn btn-secondary float-right">Добавить объект</a>
+{% endblock %}
+
+{% block scripts %}
+    <script>
+        $(function () {
+            $('.expert-object-delete').click(function (e) {
+                e.preventDefault();
+                $(this).prop('disabled', true);
+                $.ajax({
+                    'url': $(this).attr('href'),
+                    'type': 'POST',
+                    'data': {},
+                    'success': function (data) {
+                        window.location.reload();
+                    },
+                    'error': function (data) {
+                        window.location.reload();
+                    }
+                });
+            });
+        });
+    </script>
 {% endblock %}

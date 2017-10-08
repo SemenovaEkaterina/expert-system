@@ -94,6 +94,8 @@ class AttributeAllowedValue(BaseModel):
 
 class Object(BaseModel):
     name = models.CharField(max_length=50)
+    description = models.TextField(default="")
+    image = models.ImageField(upload_to='object_images/', blank=True, null=True)
     system = models.ForeignKey(System)
 
 

@@ -12,7 +12,8 @@ from django.shortcuts import get_object_or_404
 
 from django.views import View
 
-from expert_app.models import SignupForm, LoginForm, System, SystemForm, Attribute, AttributeAllowedValue
+from expert_app.models import SignupForm, LoginForm, System, SystemForm, Attribute, AttributeAllowedValue, ObjectForm, \
+    Object
 
 
 def need_login(func):
@@ -311,7 +312,41 @@ class OfficeSystemAttrs(OfficeSystemBase):
 
 class OfficeSystemObjects(OfficeSystemBase):
     def handle(self, request, data):
-        return render(request, 'office/systems/single/objects.html', data)
+        system = data['system']
+
+        object_id = request.GET.get('object_id', None)
+        if object_id is not None:
+            if request.method == 'POST':
+                if request.GET.get('action', None) == 'delete':
+                    obj = get_object_or_404(Object, pk=object_id)
+                    obj.delete()
+                    return HttpResponse()
+                form = ObjectForm(request.POST, request.FILES)
+            elif object_id == 'new':
+                form = ObjectForm()
+            else:
+                obj = get_object_or_404(Object, pk=object_id)
+                form = ObjectForm(initial=model_to_dict(obj))
+
+            if object_id != 'new':
+                obj = get_object_or_404(Object, pk=object_id)
+                form.set_object(obj)
+
+            form.set_system(system)
+            data['form'] = form
+
+            if request.method == 'POST':
+                if form.is_valid():
+                    object = form.save()
+                    return HttpResponseRedirect(
+                        reverse('office_system', kwargs={'sid': system.id, 'section': 'objects'}))
+
+            return render(request, 'office/systems/single/objects_form.html', data)
+
+        else:
+            objects = system.object_set.all()
+            data['objects'] = objects
+            return render(request, 'office/systems/single/objects.html', data)
 
 
 class OfficeSystemParams(OfficeSystemBase):

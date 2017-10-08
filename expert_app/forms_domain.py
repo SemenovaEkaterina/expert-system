@@ -1,7 +1,7 @@
 import time
 from django import forms
 
-from expert_app.models_domain import System
+from expert_app.models_domain import System, Object
 
 
 class SystemForm(forms.Form):
@@ -95,3 +95,59 @@ class SystemForm(forms.Form):
         system.save()
 
         return system
+
+
+class ObjectForm(forms.Form):
+    name = forms.CharField(
+        widget=forms.TextInput(
+            attrs={'class': 'form-control', 'placeholder': 'Объект', }
+        ),
+        max_length=100,
+        label=u'Название'
+    )
+    description = forms.CharField(
+        widget=forms.Textarea(
+            attrs={'class': 'form-control', 'rows': '3', }
+        ),
+        label=u'Описание'
+    )
+    image = forms.FileField(
+        widget=forms.ClearableFileInput(
+            attrs={'class': 'form-control', }),
+        required=False, label=u'Изображение'
+    )
+
+    system = None
+    object = None
+
+    def set_system(self, system):
+        self.system = system
+
+    def set_object(self, obj):
+        self.object = obj
+
+    def save(self):
+        data = self.cleaned_data
+
+        name = data.get('name')
+        description = data.get('description')
+        image = data.get('image')
+
+        print(self.object)
+
+        if self.object:
+            obj = self.object
+        else:
+            obj = Object()
+            obj.system = self.system
+
+        obj.name = name
+        obj.description = description
+        if not image:
+            obj.image.delete(save=True)
+        else:
+            obj.image.save('%s_%s' % (time.time(), image.name), image, save=True)
+
+        obj.save()
+
+        return obj
