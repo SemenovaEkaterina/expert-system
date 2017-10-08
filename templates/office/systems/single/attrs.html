@@ -4,7 +4,7 @@
     <div class="form-desc">Создайте атрибуты объектов, добавьте возможные значения созданных атрибутов.</div>
     <div class="expert-attr-container">
         {% for attr in attrs %}
-            <div class="all-tasks-w tasks-section expert-attr b-b mb-2">
+            <div class="tasks-section expert-attr b-b mb-2">
                 <div class="tasks-header-w">
                     <a class="tasks-header-toggler" href="#"><i class="os-icon os-icon-arrow-right4"></i></a>
                     <span class="tasks-sub-header tasks-list-header">Атрибут</span>
@@ -47,11 +47,9 @@
         {% endfor %}
     </div>
     <div class="row">
-        <div class="col-sm-6">
-            <button class="btn btn-secondary expert-attr-add float-right">Добавить атрибут</button>
-        </div>
-        <div class="col-sm-6">
-            <button class="btn btn-primary expert-attr-save">Сохранить</button>
+        <div class="col-sm-12">
+            <button class="btn btn-lg btn-primary expert-attr-save">Сохранить</button>
+            <button class="btn btn-secondary expert-attr-add ml-3">Добавить атрибут</button>
         </div>
     </div>
 {% endblock %}
@@ -64,7 +62,7 @@
         $(function () {
             var templateSection = function () {
                 var html = [
-                    '<div class="all-tasks-w tasks-section expert-attr">',
+                    '<div class="tasks-section expert-attr">',
                     '<div class="tasks-header-w">',
                     '<span class="tasks-header-toggler"><i class="os-icon os-icon-arrow-right4"></i></span>',
                     '<span class="tasks-sub-header tasks-list-header">Атрибут</span>',

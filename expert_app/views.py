@@ -13,7 +13,7 @@ from django.shortcuts import get_object_or_404
 from django.views import View
 
 from expert_app.models import SignupForm, LoginForm, System, SystemForm, Attribute, AttributeAllowedValue, ObjectForm, \
-    Object
+    Object, Parameter, ParameterAllowedValue
 
 
 def need_login(func):
@@ -245,7 +245,7 @@ class OfficeSystemAbout(OfficeSystemBase):
 class OfficeSystemAttrs(OfficeSystemBase):
     def handle(self, request, data):
         system = data['system']
-        attrs = system.attribute_set.all()
+        attrs = system.attribute_set.prefetch_related('attributeallowedvalue_set').all()
         data['attrs'] = attrs
 
         return render(request, 'office/systems/single/attrs.html', data)
@@ -373,7 +373,72 @@ class OfficeSystemObjects(OfficeSystemBase):
 
 class OfficeSystemParams(OfficeSystemBase):
     def handle(self, request, data):
+        system = data['system']
+        params = system.parameter_set.prefetch_related('parameterallowedvalue_set').all()
+        data['params'] = params
+
         return render(request, 'office/systems/single/params.html', data)
+
+    def post(self, request, data):
+        system = data['system']
+        params = json.loads(request.POST.get('params'))
+
+        i = 0
+        for param in params:
+            i = i + 1
+            param_id = int(param['id']) if param['id'] is not None else None
+
+            if param_id is None:
+                if param['removed']:
+                    continue
+
+                p = Parameter()
+                p.system = system
+                p.name = param['name']
+                p.type = param['type']
+                p.order = i
+                p.save()
+            else:
+                p = Parameter.objects.get(pk=param_id)
+                if param['removed']:
+                    p.delete(keep_parents=True)
+                    continue
+                else:
+                    p.system = system
+                    p.name = param['name']
+                    p.type = param['type']
+                    p.order = i
+                    p.save()
+
+            j = 0
+            for paramv in param['vals']:
+                j = j + 1
+                paramv_id = int(paramv['id']) if paramv['id'] is not None else None
+                if paramv_id is None:
+                    if paramv['removed']:
+                        continue
+
+                    pv = ParameterAllowedValue()
+                    pv.parameter = p
+                    pv.value = paramv['name']
+                    pv.order = j
+                    pv.save()
+                else:
+                    pv = ParameterAllowedValue.objects.get(pk=paramv_id)
+                    if paramv['removed']:
+                        pv.delete(keep_parents=True)
+                        continue
+                    else:
+                        pv.parameter = p
+                        pv.value = paramv['name']
+                        pv.order = j
+                        pv.save()
+
+        return HttpResponse(
+            content=json.dumps({
+                'result': True,
+            })
+        )
 
 
 class OfficeSystemQuestions(OfficeSystemBase):

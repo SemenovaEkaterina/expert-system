@@ -107,10 +107,12 @@ class ObjectAttributeValue(BaseModel):
 
 class Parameter(BaseModel):
     TYPE_PREDEF = 0
-    TYPE_ANY = 1
+    TYPE_INT = 1
+    TYPE_STRING = 2
     TYPES = [
         (TYPE_PREDEF, 'Заранее определенные значения'),
-        (TYPE_ANY, 'Любые значения'),
+        (TYPE_INT, 'Число'),
+        (TYPE_STRING, 'Строка'),
     ]
 
     name = models.CharField(max_length=50)
@@ -118,7 +120,7 @@ class Parameter(BaseModel):
     system = models.ForeignKey(System)
 
 
-class ParameterValue(BaseModel):
+class ParameterAllowedValue(BaseModel):
     value = models.CharField(max_length=50)
     parameter = models.ForeignKey(Parameter)
 
@@ -140,7 +142,7 @@ class Question(BaseModel):
 
 class Answer(BaseModel):
     name = models.CharField(max_length=50)
-    parameter_value = models.ForeignKey(ParameterValue)
+    parameter_value = models.ForeignKey(ParameterAllowedValue)
     question = models.ForeignKey(Question)
 
 

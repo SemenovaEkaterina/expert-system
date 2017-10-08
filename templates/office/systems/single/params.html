@@ -1,4 +1,213 @@
 {% extends 'office/systems/single/page.html' %}
 
 {% block page_content %}
+    <div class="form-desc">Создайте параметры системы, укажите типы значений и добавьте возможные значения.
+    </div>
+    <div class="expert-param-container">
+        {% for param in params %}
+            <div class="tasks-section expert-param b-b mb-2">
+                <div class="tasks-header-w">
+                    <a class="tasks-header-toggler" href="#"><i class="os-icon os-icon-arrow-right4"></i></a>
+                    <span class="tasks-sub-header tasks-list-header">Параметр</span>
+                    <h5 class="tasks-header">
+                        <input data-pid="{{ param.id }}" type="text" class="form-control expert-param-name"
+                               placeholder="Название параметра"
+                               value="{{ param.name }}"/>
+                    </h5>
+                    <a href="#" class="expert-param-remove h5 text-danger"><i class="os-icon os-icon-ui-15"></i></a>
+                    <a class="add-task-btn expert-param-val-add" href="#">
+                        <i class="os-icon os-icon-ui-22"></i><span>Добавить значение</span>
+                    </a>
+                </div>
+                <div class="tasks-list-w">
+                    <div class="tasks-list-header">
+                        Тип
+                        <select class="expert-param-type-select">
+                            <option value="0" {% if param.type == 0 %}selected="selected"{% endif %}>
+                                Заранее заданные значения
+                            </option>
+                            <option value="1" {% if param.type == 1 %}selected="selected"{% endif %}>Число</option>
+                            <option value="2" {% if param.type == 2 %}selected="selected"{% endif %}>Строка</option>
+                        </select>
+                    </div>
+                    <div class="tasks-list-header expert-param-val-list-header">
+                        Возможные значения
+                    </div>
+                    <ul class="tasks-list expert-param-val-list">
+                        {% for value in param.parameterallowedvalue_set.all %}
+                            <li class="draggable-task warning expert-param-val">
+                                <div class="todo-task-drag drag-handle">
+                                    <i class="os-icon os-icon-hamburger-menu-2 drag-handle"></i>
+                                </div>
+                                <div class="todo-task">
+                                    <input data-pvid="{{ value.id }}" type="text"
+                                           class="form-control expert-param-val-name"
+                                           value="{{ value.value }}" placeholder="Значение">
+                                    <div class="todo-task-buttons">
+                                        <a class="task-btn-delete expert-param-val-remove" href="#">
+                                            <span>Удалить</span>
+                                            <i class="os-icon os-icon-ui-15"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+    <div class="row">
+        <div class="col-sm-12">
+            <button class="btn btn-lg btn-primary expert-param-save">Сохранить</button>
+            <button class="btn btn-secondary expert-param-add ml-3">Добавить параметр</button>
+        </div>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+    {% load static %}
+    <link href="{% static 'bower_components/dragula.js/dist/dragula.min.css' %}" rel="stylesheet">
+    <script src="{% static 'bower_components/dragula.js/dist/dragula.min.js' %}"></script>
+    <script>
+        $(function () {
+            var templateSection = function () {
+                var html = [
+                    '<div class="tasks-section expert-param">',
+                    '<div class="tasks-header-w">',
+                    '<span class="tasks-header-toggler"><i class="os-icon os-icon-arrow-right4"></i></span>',
+                    '<span class="tasks-sub-header tasks-list-header">Параметр</span>',
+                    '<h5 class="tasks-header">',
+                    '<input type="text" data-pid="null" class="form-control expert-param-name" placeholder="Название параметра"/>',
+
+                    '</h5>',
+                    '<a href="#" class="expert-param-remove h5 text-danger"><i class="os-icon os-icon-ui-15"></i></a>',
+                    '<a class="add-task-btn expert-param-val-add" href="#">',
+                    '<i class="os-icon os-icon-ui-22"></i><span>Добавить значение</span>',
+                    '</a>',
+                    '</div>',
+
+                    '<div class="tasks-list-w">',
+                    '<div class="tasks-list-header">\n' +
+                    'Тип\n',
+
+                    ('<select class="expert-param-type-select">' +
+                        '<option value="0" selected="selected">Заранее заданные значения</option>' +
+                        '<option value="1">Число</option>' +
+                        '<option value="2">Строка</option>' +
+                        '</select>'
+                    ),
+                    '</div>',
+
+                    '<div class="tasks-list-header expert-param-val-list-header">\n' +
+                    'Возможные значения\n' +
+                    '</div>',
+                    '<ul class="tasks-list expert-param-val-list">',
+                    '</div>',
+                    '</div>',
+                    '</div>'
+                ];
+
+                return html.join('\n');
+            };
+
+            var templateVal = function () {
+                return '<li class="draggable-task warning expert-param-val">\n' +
+                    '<div class="todo-task-drag drag-handle">\n' +
+                    '<i class="os-icon os-icon-hamburger-menu-2 drag-handle"></i>\n' +
+                    '</div>\n' +
+                    '<div class="todo-task">\n' +
+                    '<input type="text" data-pvid="null" class="form-control expert-param-val-name" placeholder="Значение">\n' +
+                    '<div class="todo-task-buttons">\n' +
+                    '<a class="task-btn-delete expert-param-val-remove" href="#">\n' +
+                    '<span>Удалить</span>\n' +
+                    '<i class="os-icon os-icon-ui-15"></i>\n' +
+                    '</a>\n' +
+                    '</div>\n' +
+                    '</div>\n' +
+                    ' </li>';
+            };
+            $('.expert-param-add').click(function () {
+                var $param = $(templateSection());
+                $('.expert-param-container').append($param);
+                $param.find('.expert-param-type-select').trigger('redraw');
+
+                addToDragula($param.find('.tasks-list'));
+            });
+
+            $('.expert-param-container').on('click', '.expert-param-val-add', function (e) {
+                e.preventDefault();
+                var $paramVal = $(templateVal());
+                $(this).parents('.expert-param').find('.expert-param-val-list').append(
+                    $paramVal
+                );
+            }).on('click', '.expert-param-remove', function (e) {
+                e.preventDefault();
+                $(this).parents('.expert-param').hide();
+            }).on('click', '.expert-param-val-remove', function (e) {
+                e.preventDefault();
+                $(this).parents('.warning').hide();
+            }).on('redraw', '.expert-param-type-select', function () {
+                var val = $(this).val();
+                var $parent = $(this).parents('.expert-param');
+                var $elements = $parent.find('.expert-param-val-list-header, .expert-param-val-list, .expert-param-val-add');
+
+                switch (val) {
+                    case '0':
+                        $elements.show();
+                        break;
+                    case '1':
+                    case '2':
+                        $elements.hide();
+                        break;
+                }
+            }).on('change', '.expert-param-type-select', function () {
+                $(this).trigger('redraw');
+            });
+
+            $('.expert-param-type-select').trigger('redraw');
+
+            $('.expert-param-save').click(function (e) {
+                e.preventDefault();
+
+                var params = $('.expert-param').map(function (i, el) {
+                    var id = $(this).find('.expert-param-name').data('pid');
+                    var name = $(this).find('.expert-param-name').val();
+                    var type = $(this).find('.expert-param-type-select').val();
+                    var removed = !$(this).is(':visible');
+
+                    var vals = $(this).find('.expert-param-val').map(function () {
+                        var id = $(this).find('.expert-param-val-name').data('pvid');
+                        var name = $(this).find('.expert-param-val-name').val();
+                        var removed = !$(this).is(':visible');
+                        return {
+                            'id': id,
+                            'name': name,
+                            'removed': removed
+                        };
+                    }).toArray();
+                    return {
+                        'id': id,
+                        'name': name,
+                        'type': type,
+                        'removed': removed,
+                        'vals': vals
+                    };
+                }).toArray();
+
+                $(this).prop('disabled', true);
+                $.ajax({
+                    'url': '{% url 'office_system' sid=system.id section='params' %}',
+                    'type': 'POST',
+                    'data': {'params': JSON.stringify(params)},
+                    'success': function (data) {
+                        window.location.reload();
+                    },
+                    'error': function (data) {
+                        $(this).prop('disabled', false);
+                    }
+                });
+            });
+        });
+    </script>
 {% endblock %}
