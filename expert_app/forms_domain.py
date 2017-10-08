@@ -133,8 +133,6 @@ class ObjectForm(forms.Form):
         description = data.get('description')
         image = data.get('image')
 
-        print(self.object)
-
         if self.object:
             obj = self.object
         else:
