@@ -96,7 +96,7 @@ class OfficeDashboard(View):
 class OfficeSystems(View):
     @method_decorator(need_login)
     def get(self, request, page='mine'):
-        if page not in ['mine', 'all']:
+        if page not in ['mine', ]:
             page = 'mine'
 
         lst = []
