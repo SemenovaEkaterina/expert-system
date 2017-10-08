@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{ title }} &mdash; {{ project_name }}</title>
+    <meta charset="utf-8">
+    <meta content="{{ project_keywords }}" name="keywords">
+    <meta content="{{ project_author }}" name="author">
+    <meta content="{{ project_description }}" name="description">
+    <meta content="width=device-width, initial-scale=1" name="viewport">
+    {% load static %}
+    <link href="{% static 'favicon.png' %}" rel="shortcut icon">
+    <link href="{% static 'apple-touch-icon.png' %}" rel="apple-touch-icon">
+    <link href="{% static 'css/main.css' %}?version=3.5.1" rel="stylesheet">
+</head>
+<body>
+<div class="all-wrapper menu-side no-padding-content white-bg-content">
+    <div class="layout-w">
+        <div class="menu-mobile menu-activated-on-click color-scheme-dark">
+            <div class="mm-logo-buttons-w">
+                <a class="mm-logo" href="{% url 'home' %}">
+                    <img src="{% static 'img/logo.png' %}"><span></span>
+                </a>
+            </div>
+            <div class="menu-and-user">
+                <ul class="main-menu">
+                    <li class="">
+                        <a href="{% url 'home' %}">
+                            <div class="icon-w">
+                                <div class="os-icon os-icon-grid-squares"></div>
+                            </div>
+                            <span>Главная</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="desktop-menu menu-side-w menu-activated-on-click color-scheme-dark">
+            <div class="logo-w">
+                <a class="logo" href="{% url 'science' slug=slug %}"><img src="{% static 'img/logo.png' %}"><span
+                        style="margin:0"><strong>{{ title }}</strong></span></a>
+            </div>
+            <div class="menu-and-user">
+                <ul class="main-menu">
+                    <li class="">
+                        <a href="{% url 'home' %}">
+                            <div class="icon-w">
+                                <div class="os-icon os-icon-grid-squares"></div>
+                            </div>
+                            <span>Главная</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="content-w">
+            <div class="content-i">
+                <div class="content-box">
+                    <div class="section-heading centered">
+                        <h1>
+                            {{ title }}
+                        </h1>
+                        <p>
+                            {{ description }}
+                        </p>
+                    </div>
+                </div>
+                {% block content %}
+                {% endblock %}
+            </div>
+        </div>
+    </div>
+    <div class="display-type"></div>
+</div>
+<script src="{% static 'bower_components/jquery/dist/jquery.min.js' %}"></script>
+<script src="{% static 'bower_components/moment/moment.js' %}"></script>
+<script src="{% static 'bower_components/chart.js/dist/Chart.min.js' %}"></script>
+<script src="{% static 'bower_components/select2/dist/js/select2.full.min.js' %}"></script>
+<script src="{% static 'bower_components/ckeditor/ckeditor.js' %}"></script>
+<script src="{% static 'bower_components/bootstrap-validator/dist/validator.min.js' %}"></script>
+<script src="{% static 'bower_components/bootstrap-daterangepicker/daterangepicker.js' %}"></script>
+<script src="{% static 'bower_components/dropzone/dist/dropzone.js' %}"></script>
+<script src="{% static 'bower_components/editable-table/mindmup-editabletable.js' %}"></script>
+<script src="{% static 'bower_components/datatables.net/js/jquery.dataTables.min.js' %}"></script>
+<script src="{% static 'bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js' %}"></script>
+<script src="{% static 'bower_components/fullcalendar/dist/fullcalendar.min.js' %}"></script>
+<script src="{% static 'bower_components/perfect-scrollbar/js/perfect-scrollbar.jquery.min.js' %}"></script>
+<script src="{% static 'bower_components/tether/dist/js/tether.min.js' %}"></script>
+<script src="{% static 'bower_components/bootstrap/js/dist/util.js' %}"></script>
+<script src="{% static 'bower_components/bootstrap/js/dist/alert.js' %}"></script>
+<script src="{% static 'bower_components/bootstrap/js/dist/button.js' %}"></script>
+<script src="{% static 'bower_components/bootstrap/js/dist/carousel.js' %}"></script>
+<script src="{% static 'bower_components/bootstrap/js/dist/collapse.js' %}"></script>
+<script src="{% static 'bower_components/bootstrap/js/dist/dropdown.js' %}"></script>
+<script src="{% static 'bower_components/bootstrap/js/dist/modal.js' %}"></script>
+<script src="{% static 'bower_components/bootstrap/js/dist/tab.js' %}"></script>
+<script src="{% static 'bower_components/bootstrap/js/dist/tooltip.js' %}"></script>
+<script src="{% static 'bower_components/bootstrap/js/dist/popover.js' %}"></script>
+<script src="{% static 'js/main.js' %}?version=3.5.1"></script>
+</body>
+</html>

@@ -20,12 +20,14 @@ from django.conf.urls.static import static
 
 from expert import settings
 from expert_app.views import Home, Login, Signup, Logout, OfficeDashboard, OfficeSystems, OfficeSystemSingle, \
-    OfficeSystemAdd
+    OfficeSystemAdd, ScienceSystem
 
 urlpatterns = [
                   url(r'^login/$', Login.as_view(), name='login'),
                   url(r'^signup/$', Signup.as_view(), name='signup'),
                   url(r'^logout/$', Logout.as_view(), name='logout'),
+
+                  url(r'^science/(?P<slug>\w+)/$', ScienceSystem.as_view(), name='science'),
 
                   url(r'^office/systems/add/$', OfficeSystemAdd.as_view(), name='office_system_add'),
                   url(r'^office/systems/(?P<page>\w*)?/?$', OfficeSystems.as_view(), name='office_systems'),

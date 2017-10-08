@@ -127,12 +127,13 @@
         <div class="row">
             {% for system in systems %}
                 <div class="col-sm-6 col-xl-4">
-                    <a class="demo-w" href="#" target="_blank">
+                    <a class="demo-w" href="{% url 'science' slug=system.slug %}" target="_blank">
                         <div class="demo-header" style="min-height: 3em">
                             {{ system.name }}
                         </div>
                         <div class="demo-shot-w">
-                            <div class="demo-shot" style="background-image: url({% if system.image %}{{ system.image.url }}{% else %}{% static 'img/front/system.jpg' %}{% endif %})"></div>
+                            <div class="demo-shot" style="background-image: url(
+                                    {% if system.image %}{{ system.image.url }}{% else %}{% static 'img/front/system.jpg' %}{% endif %})"></div>
                         </div>
                     </a>
                 </div>

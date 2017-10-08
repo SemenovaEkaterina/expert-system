@@ -367,6 +367,18 @@ class OfficeSystemAdd(View):
         return self.handle(request)
 
 
+class ScienceSystem(View):
+    def get(self, request, slug):
+        system = get_object_or_404(System, slug=slug)
+
+        return render(request, 'science/intro.html', {
+            'title': system.name,
+            'description': system.description,
+            'slug': slug,
+            'system': system,
+        })
+
+
 def handler404(request):
     response = render_to_response('error.html', {
         'request': request,
