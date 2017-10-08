@@ -1,3 +1,5 @@
+import json
+
 from django.contrib import auth
 from django.contrib.auth.decorators import login_required
 from django.forms import model_to_dict
@@ -10,7 +12,7 @@ from django.shortcuts import get_object_or_404
 
 from django.views import View
 
-from expert_app.models import SignupForm, LoginForm, System, SystemForm
+from expert_app.models import SignupForm, LoginForm, System, SystemForm, Attribute, AttributeAllowedValue
 
 
 def need_login(func):
@@ -192,6 +194,12 @@ class OfficeSystemSingle(View):
         klass = section_data['class']
 
         obj = klass()
+
+        if request.method == 'POST':
+            return obj.post(request, data)
+        elif request.method == 'GET':
+            return obj.get(request, data)
+
         return obj.handle(request, data)
 
     def get(self, *args, **kwargs):
@@ -235,27 +243,90 @@ class OfficeSystemAbout(OfficeSystemBase):
 
 class OfficeSystemAttrs(OfficeSystemBase):
     def handle(self, request, data):
-        return render(request, 'office/systems/single/about.html', data)
+        system = data['system']
+        attrs = system.attribute_set.all()
+        data['attrs'] = attrs
+
+        return render(request, 'office/systems/single/attrs.html', data)
+
+    def post(self, request, data):
+        system = data['system']
+        attrs = json.loads(request.POST.get('attrs'))
+
+        i = 0
+        for attr in attrs:
+            i = i + 1
+            attr_id = int(attr['id']) if attr['id'] is not None else None
+
+            if attr_id is None:
+                if attr['removed']:
+                    continue
+
+                a = Attribute()
+                a.system = system
+                a.name = attr['name']
+                a.order = i
+                a.save()
+            else:
+                a = Attribute.objects.get(pk=attr_id)
+                if attr['removed']:
+                    a.delete(keep_parents=True)
+                    continue
+                else:
+                    a.system = system
+                    a.name = attr['name']
+                    a.order = i
+                    a.save()
+
+            j = 0
+            for attrv in attr['vals']:
+                j = j + 1
+                attrv_id = int(attrv['id']) if attrv['id'] is not None else None
+                if attrv_id is None:
+                    if attrv['removed']:
+                        continue
+
+                    av = AttributeAllowedValue()
+                    av.attribute = a
+                    av.value = attrv['name']
+                    av.order = j
+                    av.save()
+                else:
+                    av = AttributeAllowedValue.objects.get(pk=attrv_id)
+                    if attrv['removed']:
+                        av.delete(keep_parents=True)
+                        continue
+                    else:
+                        av.attribute = a
+                        av.value = attrv['name']
+                        av.order = j
+                        av.save()
+
+        return HttpResponse(
+            content=json.dumps({
+                'result': True,
+            })
+        )
 
 
 class OfficeSystemObjects(OfficeSystemBase):
     def handle(self, request, data):
-        return render(request, 'office/systems/single/about.html', data)
+        return render(request, 'office/systems/single/objects.html', data)
 
 
 class OfficeSystemParams(OfficeSystemBase):
     def handle(self, request, data):
-        return render(request, 'office/systems/single/about.html', data)
+        return render(request, 'office/systems/single/params.html', data)
 
 
 class OfficeSystemQuestions(OfficeSystemBase):
     def handle(self, request, data):
-        return render(request, 'office/systems/single/about.html', data)
+        return render(request, 'office/systems/single/questions.html', data)
 
 
 class OfficeSystemRules(OfficeSystemBase):
     def handle(self, request, data):
-        return render(request, 'office/systems/single/about.html', data)
+        return render(request, 'office/systems/single/rules.html', data)
 
 
 class OfficeSystemAdd(View):

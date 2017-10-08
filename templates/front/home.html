@@ -132,8 +132,7 @@
                             {{ system.name }}
                         </div>
                         <div class="demo-shot-w">
-                            <div class="demo-shot" style="background-image: url(
-                                    {% if system.image %}{{ system.image.url }}{% else %}{% static 'img/front/system.jpg' %}{% endif %})"></div>
+                            <div class="demo-shot" style="background-image: url({% if system.image %}{{ system.image.url }}{% else %}{% static 'img/front/system.jpg' %}{% endif %})"></div>
                         </div>
                     </a>
                 </div>

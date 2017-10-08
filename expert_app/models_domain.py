@@ -9,9 +9,11 @@ from django.contrib.auth.models import User
 class BaseModel(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     modified_at = models.DateTimeField(auto_now=True)
+    order = models.IntegerField(default=0)
 
     class Meta:
         abstract = True
+        ordering = ['order']
 
 
 class SystemQuerySet(models.QuerySet):
@@ -82,25 +84,21 @@ class System(BaseModel):
 
 class Attribute(BaseModel):
     name = models.CharField(max_length=50)
-    order = models.IntegerField(default=0)
     system = models.ForeignKey(System)
 
 
 class AttributeAllowedValue(BaseModel):
     value = models.CharField(max_length=50)
-    order = models.IntegerField(default=0)
     attribute = models.ForeignKey(Attribute)
 
 
 class Object(BaseModel):
     name = models.CharField(max_length=50)
-    order = models.IntegerField(default=0)
     system = models.ForeignKey(System)
 
 
 class ObjectAttributeValue(BaseModel):
     object = models.ForeignKey(Object)
-    order = models.IntegerField(default=0)
     attribute = models.ForeignKey(Attribute)
     attribute_value = models.ForeignKey(AttributeAllowedValue)
 
@@ -115,13 +113,11 @@ class Parameter(BaseModel):
 
     name = models.CharField(max_length=50)
     type = models.IntegerField(choices=TYPES, default=TYPE_PREDEF)
-    order = models.IntegerField(default=0)
     system = models.ForeignKey(System)
 
 
 class ParameterValue(BaseModel):
     value = models.CharField(max_length=50)
-    order = models.IntegerField(default=0)
     parameter = models.ForeignKey(Parameter)
 
 
@@ -137,21 +133,18 @@ class Question(BaseModel):
     name = models.CharField(max_length=100)
     type = models.IntegerField(choices=TYPES, default=TYPE_PREDEF)
     parameter = models.ForeignKey(Parameter)
-    order = models.IntegerField(default=0)
     system = models.ForeignKey(System)
 
 
 class Answer(BaseModel):
     name = models.CharField(max_length=50)
     parameter_value = models.ForeignKey(ParameterValue)
-    order = models.IntegerField(default=0)
     question = models.ForeignKey(Question)
 
 
 ###############################
 class Rule(BaseModel):
     data = models.TextField()
-    order = models.IntegerField()
     system = models.ForeignKey(System, blank=True, null=True)
 
 

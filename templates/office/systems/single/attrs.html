@@ -1,0 +1,161 @@
+{% extends 'office/systems/single/page.html' %}
+
+{% block page_content %}
+    <div class="all-tasks-w expert-attr-container">
+        {% for attr in attrs %}
+            <div class="tasks-section expert-attr">
+                <div class="tasks-header-w">
+                    <h5 class="tasks-header">
+                        <input data-aid="{{ attr.id }}" type="text" class="form-control expert-attr-name"
+                               placeholder="Название атрибута"
+                               value="{{ attr.name }}"/>
+                    </h5>
+                    <a href="#" class="expert-attr-remove h5 text-danger"><i class="os-icon os-icon-ui-15"></i></a>
+                    <a class="add-task-btn expert-attr-val-add" href="#">
+                        <i class="os-icon os-icon-ui-22"></i><span>Добавить значение</span>
+                    </a>
+                </div>
+                <div class="tasks-list-w">
+                    <ul class="tasks-list expert-attr-val-list">
+                        {% for value in attr.attributeallowedvalue_set.all %}
+                            <li class="draggable-task warning expert-attr-val">
+                                <div class="todo-task-drag drag-handle">
+                                    <i class="os-icon os-icon-hamburger-menu-2 drag-handle"></i>
+                                </div>
+                                <div class="todo-task">
+                                    <input data-avid="{{ value.id }}" type="text"
+                                           class="form-control expert-attr-val-name"
+                                           value="{{ value.value }}" placeholder="Значение">
+                                    <div class="todo-task-buttons">
+                                        <a class="task-btn-delete expert-attr-val-remove" href="#">
+                                            <span>Удалить</span>
+                                            <i class="os-icon os-icon-ui-15"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+    <div class="row">
+        <div class="col-sm-6">
+            <button class="btn btn-secondary expert-attr-add float-right">Добавить атрибут</button>
+        </div>
+        <div class="col-sm-6">
+            <button class="btn btn-primary expert-attr-save">Сохранить</button>
+        </div>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+    {% load static %}
+    <link href="{% static 'bower_components/dragula.js/dist/dragula.min.css' %}" rel="stylesheet">
+    <script src="{% static 'bower_components/dragula.js/dist/dragula.min.js' %}"></script>
+    <script>
+        $(function () {
+            var templateSection = function () {
+                var html = [
+                    '<div class="tasks-section expert-attr">',
+                    '<div class="tasks-header-w">',
+                    '<h5 class="tasks-header">',
+                    '<input type="text" data-aid="null" class="form-control expert-attr-name" placeholder="Название атрибута"/>',
+
+                    '</h5>',
+                    '<a href="#" class="expert-attr-remove h5 text-danger"><i class="os-icon os-icon-ui-15"></i></a>',
+                    '<a class="add-task-btn expert-attr-val-add" href="#">',
+                    '<i class="os-icon os-icon-ui-22"></i><span>Добавить значение</span>',
+                    '</a>',
+                    '</div>',
+
+                    '<div class="tasks-list-w">',
+                    '<ul class="tasks-list expert-attr-val-list">',
+                    '</div>',
+                    '</div>',
+                    '</div>'
+                ];
+
+                return html.join('\n');
+            };
+
+            var templateVal = function () {
+                return '<li class="draggable-task warning expert-attr-val">\n' +
+                    '<div class="todo-task-drag drag-handle">\n' +
+                    '<i class="os-icon os-icon-hamburger-menu-2 drag-handle"></i>\n' +
+                    '</div>\n' +
+                    '<div class="todo-task">\n' +
+                    '<input type="text" data-avid="null" class="form-control expert-attr-val-name" placeholder="Значение">\n' +
+                    '<div class="todo-task-buttons">\n' +
+                    '<a class="task-btn-delete expert-attr-val-remove" href="#">\n' +
+                    '<span>Удалить</span>\n' +
+                    '<i class="os-icon os-icon-ui-15"></i>\n' +
+                    '</a>\n' +
+                    '</div>\n' +
+                    '</div>\n' +
+                    ' </li>';
+            };
+            $('.expert-attr-add').click(function () {
+                var $attr = $(templateSection());
+                $('.expert-attr-container').append($attr);
+
+                addToDragula($attr.find('.tasks-list'));
+            });
+
+            $('.expert-attr-container').on('click', '.expert-attr-val-add', function (e) {
+                e.preventDefault();
+                var $attrVal = $(templateVal());
+                $(this).parents('.expert-attr').find('.expert-attr-val-list').append(
+                    $attrVal
+                );
+            }).on('click', '.expert-attr-remove', function (e) {
+                e.preventDefault();
+                $(this).parents('.expert-attr').hide();
+            }).on('click', '.expert-attr-val-remove', function (e) {
+                e.preventDefault();
+                $(this).parents('.warning').hide();
+            });
+
+            $('.expert-attr-save').click(function (e) {
+                e.preventDefault();
+
+                var attrs = $('.expert-attr').map(function (i, el) {
+                    var id = $(this).find('.expert-attr-name').data('aid');
+                    var name = $(this).find('.expert-attr-name').val();
+                    var removed = !$(this).is(':visible');
+
+                    var vals = $(this).find('.expert-attr-val').map(function () {
+                        var id = $(this).find('.expert-attr-val-name').data('avid');
+                        var name = $(this).find('.expert-attr-val-name').val();
+                        var removed = !$(this).is(':visible');
+                        return {
+                            'id': id,
+                            'name': name,
+                            'removed': removed
+                        };
+                    }).toArray();
+                    return {
+                        'id': id,
+                        'name': name,
+                        'removed': removed,
+                        'vals': vals
+                    };
+                }).toArray();
+
+                $(this).prop('disabled', true);
+                $.ajax({
+                    'url': '{% url 'office_system' sid=system.id section='attrs' %}',
+                    'type': 'POST',
+                    'data': {'attrs': JSON.stringify(attrs)},
+                    'success': function (data) {
+                        window.location.reload();
+                    },
+                    'error': function (data) {
+                        $(this).prop('disabled', false);
+                    }
+                });
+            });
+        });
+    </script>
+{% endblock %}
