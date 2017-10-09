@@ -513,12 +513,50 @@ class ScienceSystem(View):
     def get(self, request, slug):
         system = get_object_or_404(System, slug=slug)
 
+        if 'exp_session_id_'+slug not in request.session:
+            pass
+            # new_session
+        else:
+            pass
+            # get_session
+
         return render(request, 'science/intro.html', {
             'title': system.name,
             'description': system.description,
             'slug': slug,
             'system': system,
+
         })
+
+
+class ScienceSession(View):
+    def get(self, request, slug):
+        system = get_object_or_404(System, slug=slug)
+
+        if 'exp_session_id_'+slug not in request.session:
+            # new_session
+            id = 1
+            request.session['exp_session_id_' + slug] = id
+        else:
+            id = request.session['exp_session_id_'+slug]
+
+        # get_session, question, answer, stat
+        question = {'text': 'Это вопрос', 'type': 0}
+        answers = [{'text': 'dewdw', 'id': 0}, {'text': 'dewdw234', 'id': 1}]
+        stat_items = [{'name': 'Папины дочки', 'value': 33}, {'name': 'Моя прекрасня няня', 'value': 56}]
+
+        return render(request, 'science/session.html', {
+            'title': system.name,
+            'description': system.description,
+            'slug': slug,
+            'system': system,
+            'answers': answers,
+            'question': question,
+            'stat_items': stat_items
+        })
+
+    def post(self, request, slug):
+        return HttpResponseRedirect(reverse('science_session', kwargs={'slug': slug}))
 
 
 def handler404(request):
