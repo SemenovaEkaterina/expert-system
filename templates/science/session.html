@@ -12,19 +12,20 @@
                     <div class="form-desc">
                         Выберете вариант ответа
                     </div>
-                    <div class="row">
-                        <form action="" method="post" style="width: 100%">
+                    <form action="" method="post" style="width: 100%">
+                        <div class="row">
                             {% csrf_token %}
                             {% for a in answers %}
                                 <div class="col-md-6">
-                                    <button name="answer" value="{{ a.id }}" type="submit" style="outline: none; cursor:pointer;"
+                                    <button name="answer" value="{{ a.id }}" type="submit"
+                                            style="outline: none; cursor:pointer;"
                                             class="btn-block alert alert-{% cycle 'success' 'info' 'warning' 'danger' %}">
-                                        {{ a.text }}
+                                        {{ a.answer }}
                                     </button>
                                 </div>
                             {% endfor %}
-                        </form>
-                    </div>
+                        </div>
+                    </form>
                 {% else %}
                     <div class="form-desc">
                         Введите ответ

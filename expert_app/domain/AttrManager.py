@@ -1,6 +1,6 @@
 from django.db import models
 from expert_app.models_domain import Attribute
-from expert_app.models_domain import AttributeValue
+from expert_app.models_domain import AttributeAllowedValue
 
 
 class AttrManager(models.Manager):
@@ -17,7 +17,7 @@ class AttrManager(models.Manager):
     @staticmethod
     def add_attr_value(attr_id, value):
         attr = Attribute.objects.get(id=attr_id)
-        value = AttributeValue.objects.create(value=value, attribute=attr)
+        value = AttributeAllowedValue.objects.create(value=value, attribute=attr)
         return value.id
 
 

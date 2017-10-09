@@ -53,7 +53,7 @@ class Session:
                 if Session.objects is not None:
                     Session.objects.set_current_question(self.id, self.current_question_id)
                 self.set_asked(self.current_question_id)
-                return question
+                return {'type': question.type, 'text': question.text, 'answers': question.get_options() }
         return None
 
     def answer(self, value_id, user_answer=None):
@@ -87,12 +87,10 @@ class Session:
     def update_stat(self):
         self.objects_stat.clear()
         for obj in self.system.get_objects():
+            self.objects_stat[obj] = 0;
             for attr in self.attrs.keys():
                 if attr in obj.get_attributes() and obj.get_attributes()[attr] == self.attrs[attr]:
-                    if obj in self.objects_stat:
-                        self.objects_stat[obj] += 1
-                    else:
-                        self.objects_stat[obj] = 1
+                    self.objects_stat[obj] += 1
 
     def print_tree(self):
         print(LINE)
@@ -111,9 +109,16 @@ class Session:
 
         print(LINE)
 
+    def get_stat(self):
+        self.update_stat()
+        result = []
+        for obj in self.objects_stat.keys():
+            result.append({'name': obj.get_name(), 'value': round(100 * self.objects_stat[obj] / (len(obj.get_attributes()) + 0.0001))})
+
+        return result
+
 
 Session.objects = None
-
 
 def get_session(id):
     return Session.objects.get_by_id(id)

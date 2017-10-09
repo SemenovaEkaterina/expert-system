@@ -15,6 +15,12 @@ from django.views import View
 from expert_app.models import SignupForm, LoginForm, System, SystemForm, Attribute, AttributeAllowedValue, ObjectForm, \
     Object, Parameter, ParameterAllowedValue, QuestionForm
 
+from expert_app.domain.Session import Session as SessionDomain
+from expert_app.domain.Session import get_session as get_session_domain
+from expert_app.domain.SessionManager import *
+from expert_app.domain.System import get_system as get_system_domain
+from expert_app.domain.enableManagers import enableManagers
+
 
 def need_login(func):
     return login_required(func, redirect_field_name='continue')
@@ -513,37 +519,34 @@ class ScienceSystem(View):
     def get(self, request, slug):
         system = get_object_or_404(System, slug=slug)
 
-        if 'exp_session_id_'+slug not in request.session:
-            pass
-            # new_session
-        else:
-            pass
-            # get_session
-
         return render(request, 'science/intro.html', {
             'title': system.name,
             'description': system.description,
             'slug': slug,
             'system': system,
-
+            'hasSession': 'exp_session_id_'+slug not in request.session
         })
 
 
 class ScienceSession(View):
     def get(self, request, slug):
+        enableManagers()
+
         system = get_object_or_404(System, slug=slug)
 
-        if 'exp_session_id_'+slug not in request.session:
-            # new_session
-            id = 1
-            request.session['exp_session_id_' + slug] = id
-        else:
-            id = request.session['exp_session_id_'+slug]
+        request.session.clear()
 
-        # get_session, question, answer, stat
-        question = {'text': 'Это вопрос', 'type': 0}
-        answers = [{'text': 'dewdw', 'id': 0}, {'text': 'dewdw234', 'id': 1}]
-        stat_items = [{'name': 'Папины дочки', 'value': 33}, {'name': 'Моя прекрасня няня', 'value': 56}]
+        if 'exp_session_id_'+slug not in request.session:
+            system_domain = get_system_domain(system.id)
+            session_domain = SessionDomain(system_domain, request.user)
+            request.session['exp_session_id_' + slug] = session_domain.id
+        else:
+            session_domain = get_session_domain(request.session['exp_session_id_'+slug])
+
+        next_question = session_domain.next_question()
+        question = {'text': next_question['text'], 'type': next_question['type']}
+        answers = next_question['answers']
+        stat_items = session_domain.get_stat()
 
         return render(request, 'science/session.html', {
             'title': system.name,

@@ -113,7 +113,6 @@ class System:
 
 System.objects = None
 
-
 def get_system(id):
     return System.objects.get_by_id(id)
 

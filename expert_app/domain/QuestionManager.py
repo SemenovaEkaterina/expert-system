@@ -2,7 +2,7 @@ from django.db import models
 from expert_app.models_domain import Question
 from expert_app.models_domain import Answer
 from expert_app.models_domain import Parameter
-from expert_app.models_domain import ParameterValue
+from expert_app.models_domain import ParameterAllowedValue
 
 
 class QuestionManager(models.Manager):
@@ -20,7 +20,7 @@ class QuestionManager(models.Manager):
     def add_answer(question_id, option):
         question = Question.objects.get(id=question_id)
         parameter = Parameter.objects.get(id=option['param_id'])
-        param_value = ParameterValue.objects.get(id=option['param_value_id'])
+        param_value = ParameterAllowedValue.objects.get(id=option['param_value_id'])
         if 'compare' in option:
             compare = option['compare']
         else:
