@@ -1,0 +1,74 @@
+{% extends 'office/systems/single/page.html' %}
+
+{% block page_content %}
+    <a href="{% url 'office_system' sid=system.id section='questions' %}"
+       class="btn btn-sm btn-outline-primary float-right">Вернуться к вопросам</a>
+    <h6>{{ question.name }}</h6>
+    <div class="form-desc">Создайте возможные ответы на вопрос.</div>
+
+    <a href="{% url 'office_system' sid=system.id section='questions' %}?question_id={{ question.id }}&action=answer"
+       class="btn btn-secondary float-right">Добавить ответ</a>
+    <div class="table-responsive">
+        <table class="table table-lightborder">
+            <thead>
+            <tr>
+                <th>
+                    Ответ
+                </th>
+                <th>
+                    Значение параметра
+                </th>
+                <th>
+                    Действия
+                </th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for answer in answers %}
+                <tr>
+                    <td>
+                        <a href="{% url 'office_system' sid=system.id section='questions' %}?question_id={{ question.id }}&action=answer&answer_id={{ answer.id }}">{{ answer.name }}</a>
+                    </td>
+                    <td>
+                        {% if answer.parameter_value_any %}
+                            {{ answer.parameter_value_any }}
+                        {% else %}
+                            {% if answer.parameter_value %}
+                                {{ answer.parameter_value.value }}
+                            {% endif %}
+                        {% endif %}
+                    </td>
+                    <td>
+                        <a href="{% url 'office_system' sid=system.id section='questions' %}?question_id={{ question.id }}&action=answer&answer_id={{ answer.id }}"
+                           class="btn btn-sm btn-info">Изменить</a>
+                        <a href="{% url 'office_system' sid=system.id section='questions' %}?question_id={{ question.id }}&action=delete&answer_id={{ answer.id }}"
+                           class="btn btn-sm btn-warning expert-answer-delete">Удалить</a>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+    <script>
+        $(function () {
+            $('.expert-answer-delete').click(function (e) {
+                e.preventDefault();
+                $(this).prop('disabled', true);
+                $.ajax({
+                    'url': $(this).attr('href'),
+                    'type': 'POST',
+                    'data': {},
+                    'success': function (data) {
+                        window.location.reload();
+                    },
+                    'error': function (data) {
+                        window.location.reload();
+                    }
+                });
+            });
+        });
+    </script>
+{% endblock %}

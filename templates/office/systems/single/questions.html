@@ -26,6 +26,7 @@
                     <td>
                         <a href="{% url 'office_system' sid=system.id section='questions' %}?question_id={{ question.id }}&action=question">{{ question.name }}</a>
                     </td>
+                    <td>{% if question.parameter %}{{ question.parameter.name }}{% endif %}</td>
                     <td>
                         <a href="{% url 'office_system' sid=system.id section='questions' %}?question_id={{ question.id }}&action=question"
                            class="btn btn-sm btn-info">Изменить</a>

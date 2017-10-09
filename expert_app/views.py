@@ -13,7 +13,7 @@ from django.shortcuts import get_object_or_404
 from django.views import View
 
 from expert_app.models import SignupForm, LoginForm, System, SystemForm, Attribute, AttributeAllowedValue, ObjectForm, \
-    Object, Parameter, ParameterAllowedValue, QuestionForm
+    Object, Parameter, ParameterAllowedValue, QuestionForm, Question, Answer, AnswerForm
 
 from expert_app.domain.Session import Session as SessionDomain
 from expert_app.domain.Session import get_session as get_session_domain
@@ -452,20 +452,84 @@ class OfficeSystemQuestions(OfficeSystemBase):
         system = data['system']
 
         question_id = request.GET.get('question_id', None)
-        answer = request.GET.get('answer_id', None)
+        answer_id = request.GET.get('answer_id', None)
         action = request.GET.get('action', 'questions')
 
+        question = None
+        if question_id is not None and question_id != 'new':
+            question = get_object_or_404(Question, pk=question_id)
+            data['question'] = question
+
         if action == 'question':
-            form = QuestionForm(params=system.parameter_set)
+            kwargs = {'params': system.parameter_set}
+
+            if question is not None:
+                kwargs['initial'] = model_to_dict(question)
+
+            if request.method == 'POST':
+                form = QuestionForm(request.POST, request.FILES, **kwargs)
+                form.set_system(system)
+                form.set_question(question)
+
+                if form.is_valid():
+                    question = form.save()
+                    return HttpResponseRedirect(
+                        reverse('office_system', kwargs={'sid': system.id, 'section': 'questions'}))
+            else:
+                form = QuestionForm(**kwargs)
+                form.set_system(system)
+                form.set_question(question)
+
             data['form'] = form
 
             return render(request, 'office/systems/single/questions_form.html', data)
         elif action == 'delete':
-            pass
+            if question is None:
+                raise Http404
+
+            if answer_id is not None:
+                answer = get_object_or_404(Answer, pk=answer_id)
+                answer.delete()
+                return HttpResponse()
+            else:
+                question.delete()
+                return HttpResponse()
         elif action == 'answers':
-            pass
+            if question is None:
+                raise Http404
+
+            answers = question.answer_set.all()
+            data['answers'] = answers
+
+            return render(request, 'office/systems/single/answers.html', data)
         elif action == 'answer':
-            pass
+            if question is None:
+                raise Http404
+
+            kwargs = {'question': question}
+
+            answer = None
+            if answer_id is not None and answer_id != 'new':
+                answer = get_object_or_404(Answer, pk=answer_id)
+                kwargs['initial'] = model_to_dict(answer)
+
+            if request.method == 'POST':
+                form = AnswerForm(request.POST, request.FILES, **kwargs)
+                form.set_answer(answer)
+
+                if form.is_valid():
+                    answer = form.save()
+                    return HttpResponseRedirect(
+                        reverse('office_system', kwargs={'sid': system.id, 'section': 'questions'}) + (
+                            '?question_id=%s&action=%s' % (question.id, 'answers')))
+            else:
+                form = AnswerForm(**kwargs)
+                form.set_answer(answer)
+
+            data['form'] = form
+
+            return render(request, 'office/systems/single/answers_form.html', data)
+
         else:
             questions = system.question_set.all()
             data['questions'] = questions
@@ -524,7 +588,7 @@ class ScienceSystem(View):
             'description': system.description,
             'slug': slug,
             'system': system,
-            'hasSession': 'exp_session_id_'+slug not in request.session
+            'hasSession': 'exp_session_id_' + slug not in request.session
         })
 
 
@@ -536,12 +600,12 @@ class ScienceSession(View):
 
         request.session.clear()
 
-        if 'exp_session_id_'+slug not in request.session:
+        if 'exp_session_id_' + slug not in request.session:
             system_domain = get_system_domain(system.id)
             session_domain = SessionDomain(system_domain, request.user)
             request.session['exp_session_id_' + slug] = session_domain.id
         else:
-            session_domain = get_session_domain(request.session['exp_session_id_'+slug])
+            session_domain = get_session_domain(request.session['exp_session_id_' + slug])
 
         next_question = session_domain.next_question()
         question = {'text': next_question['text'], 'type': next_question['type']}

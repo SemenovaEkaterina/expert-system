@@ -144,8 +144,8 @@ class Question(BaseModel):
 class Answer(BaseModel):
     name = models.CharField(max_length=50)
     image = models.ImageField(upload_to='answer_images/', blank=True, null=True)
-    parameter_value_any = models.CharField(max_length=50, default='')
-    parameter_value = models.ForeignKey(ParameterAllowedValue)
+    parameter_value_any = models.CharField(max_length=50, default='', null=True)
+    parameter_value = models.ForeignKey(ParameterAllowedValue, blank=True, null=True)
     question = models.ForeignKey(Question)
 
 

@@ -1,9 +1,12 @@
 import json
 import time
+
+import os
 from django import forms
 from django.forms import ModelChoiceField
 
-from expert_app.models import System, Object, ObjectAttributeValue, Attribute, Parameter, Question
+from expert_app.models import System, Object, ObjectAttributeValue, Attribute, Parameter, Question, Answer, \
+    ParameterAllowedValue
 
 
 class SystemForm(forms.Form):
@@ -34,7 +37,7 @@ class SystemForm(forms.Form):
         max_length=100,
         label=u'Авторы'
     )
-    image = forms.FileField(
+    image = forms.ImageField(
         widget=forms.ClearableFileInput(
             attrs={'class': 'form-control', }),
         required=False, label=u'Изображение'
@@ -89,10 +92,11 @@ class SystemForm(forms.Form):
         system.public = public
 
         if image is not None:
-            if not image:
+            if isinstance(image, bool) and not image:
                 system.image.delete(save=True)
             else:
-                system.image.save('%s_%s' % (slug, image.name), image, save=True)
+                name, extension = os.path.splitext(image.name)
+                system.image = image
 
         system.save()
 
@@ -113,7 +117,7 @@ class ObjectForm(forms.Form):
         ),
         label=u'Описание'
     )
-    image = forms.FileField(
+    image = forms.ImageField(
         widget=forms.ClearableFileInput(
             attrs={'class': 'form-control', }),
         required=False, label=u'Изображение'
@@ -146,10 +150,12 @@ class ObjectForm(forms.Form):
 
         obj.name = name
         obj.description = description
-        if not image:
-            obj.image.delete(save=True)
-        else:
-            obj.image.save('%s_%s' % (time.time(), image.name), image, save=True)
+
+        if image is not None:
+            if isinstance(image, bool) and not image:
+                obj.image.delete(save=True)
+            else:
+                obj.image = image
 
         obj.save()
 
@@ -181,7 +187,7 @@ class QuestionForm(forms.Form):
         max_length=100,
         label=u'Текст вопроса'
     )
-    image = forms.FileField(
+    image = forms.ImageField(
         widget=forms.ClearableFileInput(
             attrs={'class': 'form-control', }),
         required=False, label=u'Изображение'
@@ -217,7 +223,7 @@ class QuestionForm(forms.Form):
         name = data.get('name')
         image = data.get('image')
         parameter = data.get('parameter')
-        type = data.get('type')
+        tpe = data.get('type')
 
         if self.question:
             question = self.question
@@ -227,12 +233,97 @@ class QuestionForm(forms.Form):
 
         question.name = name
         question.parameter = parameter
-        question.type = type
-        if not image:
-            question.image.delete(save=True)
-        else:
-            question.image.save('%s_%s' % (time.time(), image.name), image, save=True)
+        question.type = tpe
+
+        if image is not None:
+            if isinstance(image, bool) and not image:
+                question.image.delete(save=True)
+            else:
+                question.image = image
 
         question.save()
 
         return question
+
+
+class ParameterValueChoiceField(ModelChoiceField):
+    def label_from_instance(self, parameter_value):
+        return parameter_value.value
+
+
+class AnswerForm(forms.Form):
+    name = forms.CharField(
+        widget=forms.TextInput(
+            attrs={'class': 'form-control', 'placeholder': 'Текст', }
+        ),
+        max_length=50,
+        label=u'Текст ответа'
+    )
+    image = forms.ImageField(
+        widget=forms.ClearableFileInput(
+            attrs={'class': 'form-control', }),
+        required=False, label=u'Изображение'
+    )
+    parameter_value = ParameterValueChoiceField(
+        queryset=ParameterAllowedValue.objects.all(),
+        empty_label=None,
+        required=True,
+        label=u'Значение параметра'
+    )
+    parameter_value_any = forms.CharField(
+        widget=forms.TextInput(
+            attrs={'class': 'form-control', 'placeholder': 'Текст', }
+        ),
+        max_length=50,
+        label=u'Значение параметра'
+    )
+
+    def __init__(self, *args, **kwargs):
+        self.question = kwargs.pop('question')
+        super(AnswerForm, self).__init__(*args, **kwargs)
+
+        if self.question.parameter.type == Parameter.TYPE_PREDEF:
+            self.fields['parameter_value'].queryset = self.question.parameter.parameterallowedvalue_set.all()
+            del self.fields['parameter_value_any']
+        else:
+            input_type = 'text'
+            if self.question.parameter.type == Parameter.TYPE_INT:
+                input_type = 'number'
+
+            self.fields['parameter_value_any'].widget.input_type = type
+            del self.fields['parameter_value']
+
+    system = None
+    question = None
+    answer = None
+
+    def set_answer(self, answer):
+        self.answer = answer
+
+    def save(self):
+        data = self.cleaned_data
+
+        name = data.get('name')
+        image = data.get('image')
+        parameter_value = data.get('parameter_value')
+        parameter_value_any = data.get('parameter_value_any')
+
+        if self.answer:
+            answer = self.answer
+        else:
+            answer = Answer()
+            answer.question = self.question
+
+        answer.name = name
+        answer.parameter_value = parameter_value
+        answer.parameter_value_any = parameter_value_any
+
+        if image is not None:
+            if isinstance(image, bool) and not image:
+                answer.image.delete(save=True)
+            else:
+                answer.image = image
+
+        answer.save()
+
+        return answer
