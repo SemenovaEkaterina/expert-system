@@ -135,6 +135,7 @@ class Question(BaseModel):
         (TYPE_STRING, 'Строка'),
     ]
     name = models.CharField(max_length=100)
+    image = models.ImageField(upload_to='question_images/', blank=True, null=True)
     type = models.IntegerField(choices=TYPES, default=TYPE_PREDEF)
     parameter = models.ForeignKey(Parameter)
     system = models.ForeignKey(System)
@@ -142,6 +143,8 @@ class Question(BaseModel):
 
 class Answer(BaseModel):
     name = models.CharField(max_length=50)
+    image = models.ImageField(upload_to='answer_images/', blank=True, null=True)
+    parameter_value_any = models.CharField(max_length=50, default='')
     parameter_value = models.ForeignKey(ParameterAllowedValue)
     question = models.ForeignKey(Question)
 

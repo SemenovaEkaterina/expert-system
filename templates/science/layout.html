@@ -55,7 +55,7 @@
         <div class="content-w">
             <div class="content-i">
                 <div class="content-box">
-                    <div class="section-heading centered">
+                    <div class="section-heading centered pb-0">
                         <h1>
                             {{ title }}
                         </h1>
@@ -63,9 +63,9 @@
                             {{ description }}
                         </p>
                     </div>
+                    {% block content %}
+                    {% endblock %}
                 </div>
-                {% block content %}
-                {% endblock %}
             </div>
         </div>
     </div>

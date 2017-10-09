@@ -13,7 +13,7 @@ from django.shortcuts import get_object_or_404
 from django.views import View
 
 from expert_app.models import SignupForm, LoginForm, System, SystemForm, Attribute, AttributeAllowedValue, ObjectForm, \
-    Object, Parameter, ParameterAllowedValue
+    Object, Parameter, ParameterAllowedValue, QuestionForm
 
 
 def need_login(func):
@@ -141,7 +141,7 @@ class OfficeSystemSingle(View):
                 'class': OfficeSystemParams,
             },
             {
-                'title': 'Вопросы',
+                'title': 'Вопросы и ответы',
                 'key': 'questions',
                 'color': 'success',
                 'class': OfficeSystemQuestions,
@@ -443,7 +443,27 @@ class OfficeSystemParams(OfficeSystemBase):
 
 class OfficeSystemQuestions(OfficeSystemBase):
     def handle(self, request, data):
-        return render(request, 'office/systems/single/questions.html', data)
+        system = data['system']
+
+        question_id = request.GET.get('question_id', None)
+        answer = request.GET.get('answer_id', None)
+        action = request.GET.get('action', 'questions')
+
+        if action == 'question':
+            form = QuestionForm(params=system.parameter_set)
+            data['form'] = form
+
+            return render(request, 'office/systems/single/questions_form.html', data)
+        elif action == 'delete':
+            pass
+        elif action == 'answers':
+            pass
+        elif action == 'answer':
+            pass
+        else:
+            questions = system.question_set.all()
+            data['questions'] = questions
+            return render(request, 'office/systems/single/questions.html', data)
 
 
 class OfficeSystemRules(OfficeSystemBase):

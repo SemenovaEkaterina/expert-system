@@ -1,8 +1,9 @@
 import json
 import time
 from django import forms
+from django.forms import ModelChoiceField
 
-from expert_app.models import System, Object, ObjectAttributeValue, Attribute
+from expert_app.models import System, Object, ObjectAttributeValue, Attribute, Parameter, Question
 
 
 class SystemForm(forms.Form):
@@ -165,3 +166,73 @@ class ObjectForm(forms.Form):
             oav.save()
 
         return obj
+
+
+class ParameterChoiceField(ModelChoiceField):
+    def label_from_instance(self, parameter):
+        return parameter.name
+
+
+class QuestionForm(forms.Form):
+    name = forms.CharField(
+        widget=forms.TextInput(
+            attrs={'class': 'form-control', 'placeholder': 'Текст', }
+        ),
+        max_length=100,
+        label=u'Текст вопроса'
+    )
+    image = forms.FileField(
+        widget=forms.ClearableFileInput(
+            attrs={'class': 'form-control', }),
+        required=False, label=u'Изображение'
+    )
+    parameter = ParameterChoiceField(
+        queryset=Parameter.objects.all(),
+        empty_label=None,
+        required=True,
+        label=u'Параметр'
+    )
+    type = forms.ChoiceField(
+        choices=Question.TYPES,
+        label=u'Тип ответа'
+    )
+
+    def __init__(self, *args, **kwargs):
+        qs = kwargs.pop('params')
+        super(QuestionForm, self).__init__(*args, **kwargs)
+        self.fields['parameter'].queryset = qs
+
+    system = None
+    question = None
+
+    def set_system(self, system):
+        self.system = system
+
+    def set_question(self, question):
+        self.question = question
+
+    def save(self):
+        data = self.cleaned_data
+
+        name = data.get('name')
+        image = data.get('image')
+        parameter = data.get('parameter')
+        type = data.get('type')
+
+        if self.question:
+            question = self.question
+        else:
+            question = Question()
+            question.system = self.system
+
+        question.name = name
+        question.parameter = parameter
+        question.type = type
+        if not image:
+            question.image.delete(save=True)
+        else:
+            question.image.save('%s_%s' % (time.time(), image.name), image, save=True)
+
+        question.save()
+
+        return question

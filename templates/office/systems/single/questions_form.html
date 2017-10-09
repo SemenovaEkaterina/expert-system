@@ -1,0 +1,47 @@
+{% extends 'office/systems/single/page.html' %}
+
+{% block page_content %}
+    <div class="form-desc">Заполните основную информацию о вопросе.</div>
+    {% for e in form.non_field_errors %}
+        <div class="alert alert-danger" role="alert">
+            <strong>Ошибка! </strong>{{ e }}
+        </div>
+    {% endfor %}
+
+    {% for field in form %}
+        {% if field.errors %}
+            <div class="alert alert-danger" role="alert">
+                <strong>Ошибка! </strong>
+
+                {% for e in field.errors %}{{ e }}{% endfor %}
+            </div>
+        {% endif %}
+    {% endfor %}
+
+    <form action="" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="form-group{% if form.name.errors %} has-error has-danger{% endif %}">
+            <label for="{{ form.name.id_for_label }}">{{ form.name.label }}</label>{{ form.name }}
+        </div>
+        <div class="form-group{% if form.parameter.errors %} has-error has-danger{% endif %}">
+            <label for="{{ form.parameter.id_for_label }}">{{ form.parameter.label }}</label> {{ form.parameter }}
+        </div>
+        <div class="form-group{% if form.type.errors %} has-error has-danger{% endif %}">
+            <label for="{{ form.type.id_for_label }}">{{ form.type.label }}</label> {{ form.type }}
+        </div>
+
+        <fieldset class="form-group">
+            <legend><span>Оформление</span></legend>
+            <div class="form-group{% if form.image.errors %} has-error has-danger{% endif %}">
+                <label for="{{ form.image.id_for_label }}">{{ form.image.label }}</label><br/>{{ form.image }}
+            </div>
+        </fieldset>
+        <div class="form-buttons-w">
+            <button class="btn btn-lg btn-primary expert-object-save" type="submit">Сохранить</button>
+            <div class="form-check-inline">
+                <a href="{% url 'office_system' sid=system.id section='questions' %}"
+                   class="btn btn-sm btn-outline-primary ml-3">вернуться</a>
+            </div>
+        </div>
+    </form>
+{% endblock %}
