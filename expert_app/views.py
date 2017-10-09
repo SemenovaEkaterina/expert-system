@@ -12,6 +12,7 @@ from django.shortcuts import get_object_or_404
 
 from django.views import View
 
+from expert_app.domain.common import EQ, NQ, LT, LQ, GT, GQ, PARAMETER_TO_ATTRIBUTE, PARAMETER_TO_PARAMETER
 from expert_app.models import SignupForm, LoginForm, System, SystemForm, Attribute, AttributeAllowedValue, ObjectForm, \
     Object, Parameter, ParameterAllowedValue, QuestionForm, Question, Answer, AnswerForm
 
@@ -538,6 +539,75 @@ class OfficeSystemQuestions(OfficeSystemBase):
 
 class OfficeSystemRules(OfficeSystemBase):
     def handle(self, request, data):
+        system = data['system']
+
+        parameters = system.parameter_set.all()
+        attributes = system.attribute_set.all()
+
+        info_parameters = {}
+        for parameter in parameters:
+            p = model_to_dict(parameter)
+            p['values'] = list(map(lambda x: model_to_dict(x), parameter.parameterallowedvalue_set.all()))
+            info_parameters.update({
+                parameter.id: p,
+            })
+
+        info_attributes = {}
+        for attribute in attributes:
+            a = model_to_dict(attribute)
+            a['values'] = list(map(lambda x: model_to_dict(x), attribute.attributeallowedvalue_set.all()))
+            info_attributes.update({
+                attribute.id: a,
+            })
+
+        info = {
+            'parameters': info_parameters,
+            'attributes': info_attributes,
+            'operations': {
+                EQ: '=',
+                NQ: '!=',
+                LT: '<',
+                LQ: '<=',
+                GT: '>',
+                GQ: '>=',
+            },
+            'attribute': PARAMETER_TO_ATTRIBUTE,
+            'parameter': PARAMETER_TO_PARAMETER,
+            'or': 0,
+            'and': 1,
+        }
+
+        data['info'] = json.dumps(info)
+
+        info_rules = [
+            {
+                'id': 1,
+                'data': {
+                    'type': PARAMETER_TO_PARAMETER,
+                    'condition': [
+                        {
+                            'param_id': 4,
+                            'param_value_id': 9,
+                            'operation': LT,
+                            'param_value_any': None,
+                        },
+                        {
+                            'param_id': 2,
+                            'param_value_id': 2,
+                            'operation': EQ,
+                            'param_value_any': None,
+                        }
+                    ],
+                    'operation': 1,
+                    'second_id': 5,
+                    'second_value_id': None,
+                    'second_value_any': 678,
+                }
+            }
+        ]
+
+        data['rules'] = json.dumps(info_rules)
+
         return render(request, 'office/systems/single/rules.html', data)
 
 
