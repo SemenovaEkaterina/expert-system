@@ -19,11 +19,11 @@ class SessionManager(models.Manager):
         session = Session.objects.create(user=user, system=system)
 
         for q in questions.keys():
-            question = Question.objects.get(id=q.get_id())
+            question = Question.objects.get(id=q)
             SessionQuestionState.objects.create(session=session, question=question, value=questions[q])
 
         for p in params.keys():
-            param = Parameter.objects.get(id=p.get_id())
+            param = Parameter.objects.get(id=p)
             SessionParamState.objects.create(session=session, param=param, value=params[p])
 
         return session.id
@@ -59,15 +59,32 @@ class SessionManager(models.Manager):
         attrs = {}
 
         for p in SessionParamState.objects.filter(session=session):
-            params[system.get_param_by_id(p.id)] = p.value
+            params[p.param.id] = p.value
 
         for a in SessionAttributeState.objects.filter(session=session):
-            params[system.get_attr_by_id(a.id)] = a.value
+            attrs[a.attr.id] = a.value
 
         for q in SessionQuestionState.objects.filter(session=session):
-            params[system.get_attribute_by_id(q.id)] = q.value
+            questions[q.question.id] = q.value
 
-        own_session = OwnSession(system, session.user, params, questions, attrs)
+        own_session = OwnSession(system, session.user, params, questions, attrs, session.current_question_id, session.id)
         return own_session
+
+
+    @staticmethod
+    def save(own_session):
+        session = Session.objects.get(id=own_session.id)
+        session.current_question_id = own_session.current_question_id
+        session.save()
+
+        for q in own_session.questions.keys():
+            if q:
+                SessionQuestionState.objects.update_or_create(session=session, question_id=q, value=own_session.questions[q])
+
+        for p in own_session.params.keys():
+            if p:
+                SessionParamState.objects.update_or_create(session=session, param_id=p, value=own_session.params[p])
+
+
 
 

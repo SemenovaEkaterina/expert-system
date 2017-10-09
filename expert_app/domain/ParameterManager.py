@@ -1,6 +1,6 @@
 from django.db import models
-from ExpSystem.models import Parameter
-from ExpSystem.models import ParameterValue
+from expert_app.models_domain import Parameter
+from expert_app.models_domain import ParameterAllowedValue
 
 
 class ParameterManager(models.Manager):
@@ -17,7 +17,7 @@ class ParameterManager(models.Manager):
     @staticmethod
     def add_par_value(par_id, value):
         par = Parameter.objects.get(id=par_id)
-        value = ParameterValue.objects.create(value=value, parameter=par)
+        value = ParameterAllowedValue.objects.create(value=value, parameter=par)
         return value.id
 
 

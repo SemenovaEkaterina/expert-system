@@ -66,6 +66,11 @@ class System:
             if x.get_id() == id:
                 return x
 
+    def get_question_by_id(self, id):
+        for x in self.questions:
+            if x.get_id() == id:
+                return x
+
     def get_params(self):
         return self.params
 

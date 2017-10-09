@@ -172,7 +172,6 @@ class SessionQuestionState(models.Model):
     question = models.ForeignKey(Question)
     value = models.IntegerField(blank=True, null=True)
 
-
 class SessionAttributeState(models.Model):
     session = models.ForeignKey(Session)
     attr = models.ForeignKey(Attribute)

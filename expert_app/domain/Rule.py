@@ -27,9 +27,10 @@ class Rule:
                     if 'operation' not in x:
                         x['operation'] = EQ
                     operation = operations[x['operation']]
-                    param = self.system.get_param_by_id(x['param'])
-                    if param in params and operation(params[param], x['param_value']):
+                    param = self.system.get_param_by_id(x['param_id'])
+                    if param.id in params and operation(params[param.id], x['param_value']):
                         count += 1
+
                 if count == len(self.condition):
                     return {'attr': self.system.get_attribute_by_id(self.second_id), 'value_id': self.second_value_id}
 

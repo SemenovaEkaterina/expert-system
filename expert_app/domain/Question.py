@@ -36,15 +36,15 @@ class Question:
 
     def get_param_value_by_answer(self, answer_id, user_answer):
         for option in self.options:
-            if option['id'] == answer_id:
+            if int(option['id']) == int(answer_id):
                 return option['param_value_id']
-            if answer_id is -1:
+            if int(answer_id) is -1:
                 if operations[option['compare']](user_answer, option['answer']):
                     return option['param_value_id']
 
     def get_param_id_by_answer(self, answer_id, user_answer):
         for option in self.options:
-            if option['id'] == answer_id:
+            if int(option['id']) == int(answer_id):
                 return option['param_id']
             if answer_id is -1:
                 if operations[option['compare']](user_answer, option['answer']):

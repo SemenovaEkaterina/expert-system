@@ -14,6 +14,7 @@ from expert_app.domain.Question import Question as OwnQuestion
 from expert_app.models_domain import Answer
 from expert_app.models_domain import Rule
 from expert_app.domain.Rule import Rule as OwnRule
+from expert_app.models_domain import ObjectAttributeValue
 
 from .common import *
 
@@ -39,7 +40,11 @@ class SystemManager(models.Manager):
         system = System.objects.get(id=s_id)
         own_system = OwnSystem(system.name, system.id)
         for obj in Object.objects.filter(system=system):
-            own_system.add_object(OwnObject(obj.name, obj.id))
+            own_object = OwnObject(obj.name, obj.id)
+            own_system.add_object(own_object)
+            for attr in ObjectAttributeValue.objects.filter(object=obj):
+                own_object.set_attribute(attr.attribute.id, attr.attribute_value_id)
+
         for attr in Attribute.objects.filter(system=system):
             values = []
             for v in AttributeAllowedValue.objects.filter(attribute=attr):
@@ -58,5 +63,5 @@ class SystemManager(models.Manager):
             own_system.add_question(OwnQuestion(question.name, question.type, options, question.id))
         for rule in Rule.objects.filter(system=system):
             data = ast.literal_eval(rule.data)
-            own_system.add_rule(OwnRule(data['type'], data['condition'], data['second_id'], data['second_value_id']))
+            own_system.add_rule(OwnRule(data['type'], data['condition'], data['second_id'], data['second_value_id'], rule.id))
         return own_system
