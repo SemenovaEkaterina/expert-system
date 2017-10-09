@@ -1,4 +1,244 @@
 {% extends 'office/systems/single/page.html' %}
 
 {% block page_content %}
+    <div class="form-desc">Создайте правила, связывающие параметры с атрибутами и другими параметрами.</div>
+
+    <div class="row">
+        <div class="col-sm-12 expert-rule-container">
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-sm-12 padded-v">
+            <button href="#" class="btn btn-secondary float-right expert-rule-add">Добавить правило</button>
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block scripts %}
+    <script>
+        $(function () {
+            var info = {% autoescape off %}{{ info }}{% endautoescape %};
+            var rules = {% autoescape off %}{{ rules }}{% endautoescape %};
+            console.log(info);
+            console.log(rules);
+
+            var templateParameterFirstSelect = function () {
+                var $html = $('<select/>').addClass('form-control expert-rule-parameter-first-select');
+                $.each(info.parameters, function (k, p) {
+                    $html.append($('<option/>').val(p.id).text(p.name));
+                });
+                return $html;
+            };
+
+            var templateOperationSelect = function () {
+                var $html = $('<select/>').addClass('form-control expert-rule-operation-select');
+                $.each(info.operations, function (k, op) {
+                    $html.append($('<option/>').val(k).text(op));
+                });
+                return $html;
+            };
+
+            var templateCondition = function (header, removeable) {
+                removeable = !!removeable;
+
+                return $('<fieldset>').addClass('form-group expert-rule-condition').append(
+                    $('<legend>').append($('<span>').text(header).append(
+                        removeable ? ' <a href="#" class="expert-rule-condition-remove h5 text-warning"><i class="os-icon os-icon-ui-15"></i></a>' : ''
+                    )),
+                    $('<div>').addClass('form-group row').append(
+                        $('<div>').addClass('col-sm-4').text('Параметр'),
+                        $('<div>').addClass('col-sm-8').append(
+                            templateParameterFirstSelect()
+                        )
+                    ),
+                    $('<div>').addClass('form-group row').append(
+                        $('<div>').addClass('col-sm-4').append(
+                            templateOperationSelect()
+                        ),
+                        $('<div>').addClass('col-sm-8 expert-rule-parameter-first-val-container')
+                    )
+                );
+            };
+
+            var templateTypeSelect = function () {
+                var $html = $('<select/>').addClass('form-control expert-rule-type-select');
+                $html.append($('<option/>').val(info.attribute).text('Атрибут'));
+                $html.append($('<option/>').val(info.parameter).text('Параметр'));
+                return $html;
+            };
+
+            var templateThen = function () {
+                return $('<fieldset>').addClass('form-group expert-rule-then').append(
+                    $('<legend>').append($('<span>').text('Тогда')),
+                    $('<div>').addClass('form-group row').append(
+                        $('<div>').addClass('col-sm-4').append(
+                            templateTypeSelect()
+                        ),
+                        $('<div>').addClass('col-sm-8 expert-rule-second-container')
+                    ),
+                    $('<div>').addClass('form-group row').append(
+                        $('<div>').addClass('col-sm-4 text-right display-4').append($('<h4>').text('=')),
+                        $('<div>').addClass('col-sm-8 expert-rule-second-val-container')
+                    )
+                );
+            };
+
+            var templateButtons = function () {
+                return $('<div>').addClass('buttons-w').append(
+                    $('<button>').addClass('mr-2 btn btn-success expert-rule-or-button').text('ИЛИ'),
+                    $('<button>').addClass('mr-2 btn btn-warning expert-rule-and-button').text('И')
+                );
+            };
+
+            var template = function () {
+                return $('<div>').addClass('element-box');
+            };
+
+            $('.expert-rule-container').on('refresh', '.expert-rule-parameter-first-select', function () {
+                var val = parseInt($(this).val());
+                var param = info.parameters[val];
+                var $parent = $(this).parents('fieldset');
+
+                if (param.type === 0) {
+                    var $select = $('<select>').addClass('form-control expert-rule-parameter-first-val-select');
+                    $.each(param.values, function (k, value) {
+                        $select.append(
+                            $('<option>').val(value.id).text(value.value)
+                        );
+                    });
+                    $parent.find('.expert-rule-parameter-first-val-container').empty().append($select);
+                    $select.trigger('refresh');
+                } else {
+                    var $input = $('<input>').addClass('form-control expert-rule-parameter-first-val-input').attr('type', param.type === 1 ? 'number' : 'text');
+                    $parent.find('.expert-rule-parameter-first-val-container').empty().append($input);
+                    $input.focus();
+                }
+            }).on('refresh', '.expert-rule-type-select', function () {
+                var val = parseInt($(this).val());
+                var $parent = $(this).parents('fieldset');
+                var $select = $('<select>').addClass('form-control expert-rule-second-select');
+                $.each(val === info.attribute ? info.attributes : info.parameters, function (k, obj) {
+                    $select.append(
+                        $('<option>').val(obj.id).text(obj.name)
+                    );
+                });
+
+                $parent.find('.expert-rule-second-container').empty().append($select);
+                $select.trigger('refresh');
+            }).on('refresh', '.expert-rule-second-select', function () {
+                var val = parseInt($(this).val());
+                var $parent = $(this).parents('fieldset');
+                var valType = parseInt($parent.find('.expert-rule-type-select').val());
+
+                var $select = $('<select>').addClass('form-control expert-rule-second-val-select');
+                if (valType === info.attribute) {
+                    var attribute = info.attributes[val];
+
+                    $.each(attribute.values, function (k, value) {
+                        $select.append(
+                            $('<option>').val(value.id).text(value.value)
+                        );
+                    });
+                    $parent.find('.expert-rule-second-val-container').empty().append($select);
+                    $select.trigger('refresh');
+                } else if (valType === info.parameter) {
+                    var parameter = info.parameters[val];
+                    if (parameter.type === 0) {
+                        $.each(parameter.values, function (k, value) {
+                            $select.append(
+                                $('<option>').val(value.id).text(value.value)
+                            );
+                        });
+                        $parent.find('.expert-rule-second-val-container').empty().append($select);
+                        $select.trigger('refresh');
+                    } else {
+                        var $input = $('<input>').addClass('form-control expert-rule-second-val-input').attr('type', parameter.type === 1 ? 'number' : 'text');
+                        $parent.find('.expert-rule-second-val-container').empty().append($input);
+                        $input.focus();
+                    }
+                }
+            }).on('change', '.expert-rule-parameter-first-select, .expert-rule-type-select, .expert-rule-second-select', function () {
+                $(this).trigger('refresh');
+            }).on('click', '.expert-rule-or-button', function (e) {
+                e.preventDefault();
+
+                $(this).parents('.element-box').find('.expert-rule-condition:last').after($t = templateCondition('ИЛИ Если', true));
+                $t.find('.expert-rule-parameter-first-select').trigger('refresh');
+                $(this).parent().find('.expert-rule-and-button').hide();
+            }).on('click', '.expert-rule-and-button', function (e) {
+                e.preventDefault();
+
+                $(this).parents('.element-box').find('.expert-rule-condition:last').after($t = templateCondition('И Если', true));
+                $t.find('.expert-rule-parameter-first-select').trigger('refresh');
+                $(this).parent().find('.expert-rule-or-button').hide();
+            }).on('click', '.expert-rule-condition-remove', function (e) {
+                e.preventDefault();
+                $fieldset = $(this).parents('fieldset');
+                $parent = $fieldset.parent();
+                $fieldset.remove();
+
+                if ($parent.find('.expert-rule-condition').length === 1) {
+                    $parent.find('.expert-rule-or-button, .expert-rule-and-button').show();
+                }
+            });
+
+            $('.expert-rule-add').click(function (e) {
+                e.preventDefault();
+                var $template = template();
+                $template.append(templateCondition('Если'));
+                $template.append(templateButtons());
+                $template.append($then = templateThen());
+
+                $('.expert-rule-container').append($template);
+                $template.find('.expert-rule-parameter-first-select, .expert-rule-type-select').trigger('refresh');
+            });
+
+            for (var k in rules) {
+                var ruleId = rules[k].id;
+                var rule = rules[k].data;
+                var $template = template();
+
+                var operation = rule.operation === info.or ? 'ИЛИ' : 'И';
+
+                var conditions = [];
+                for (var condk in rule.condition) {
+                    var condition = rule.condition[condk];
+                    var $condition = templateCondition(
+                        parseInt(condk) === 0 ? 'Если' : operation + ' Если',
+                        parseInt(condk) !== 0 // removeable?
+                    );
+                    $condition.data('condition', condition);
+                    $template.append($condition);
+                    conditions.push($condition);
+                }
+
+                $template.append($buttons = templateButtons());
+
+                if (conditions.length > 1) {
+                    $buttons.find('.expert-rule-' + (rule.operation === info.and ? 'or' : 'and') + '-button').hide();
+                }
+
+                $template.append($then = templateThen());
+                $template.data('id', ruleId);
+
+                $('.expert-rule-container').append($template);
+                $template.find('.expert-rule-parameter-first-select, .expert-rule-type-select').trigger('refresh');
+
+                $.each(conditions, function (k, $condition) {
+                    var condition = $condition.data('condition');
+                    $condition.find('.expert-rule-parameter-first-select').val(condition.param_id).trigger('refresh');
+                    $condition.find('.expert-rule-parameter-first-val-select').val(condition.param_value_id);
+                    $condition.find('.expert-rule-parameter-first-val-input').val(condition.param_value_any);
+                    $condition.find('.expert-rule-operation-select').val(condition.operation);
+                });
+
+                $then.find('.expert-rule-type-select').val(rule.type).trigger('refresh');
+                $then.find('.expert-rule-second-select').val(rule.second_id).trigger('refresh');
+                $then.find('.expert-rule-second-val-select').val(rule.second_value_id).trigger('refresh');
+                $then.find('.expert-rule-second-val-input').val(rule.second_value_any).trigger('refresh');
+            }
+        });
+    </script>
 {% endblock %}
