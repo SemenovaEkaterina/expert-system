@@ -2,7 +2,7 @@ FROM python:3.5.2-slim
 
 WORKDIR /usr/src/app
 
-RUN sh -c 'apt-get update && apt-get install -y git-core'
+RUN sh -c 'apt-get update && apt-get install -y git-core python3-dev libmysqlclient-dev gcc'
 
 ADD https://api.github.com/repos/SemenovaEkaterina/expert-system/git/refs/heads/init version.json
 RUN git clone -b init https://github.com/SemenovaEkaterina/expert-system.git
