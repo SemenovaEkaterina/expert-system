@@ -20,6 +20,11 @@ services:
       - mysql
     restart: always
 
+  mysql:
+    build: ./services/mysql
+    ports:
+      - "3306:3306"
+
 networks:
   default:
     external:
