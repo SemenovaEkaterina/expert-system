@@ -5,15 +5,16 @@
 
     <div class="row">
         <div class="col-sm-12 expert-rule-container">
+            <h3 class="expert-rule-loading">Загрузка...</h3>
         </div>
     </div>
 
     <div class="row">
-        <div class="col-sm-12 padded-v">
-            <button href="#" class="btn btn-secondary float-right expert-rule-add">Добавить правило</button>
+        <div class="col-sm-12">
+            <button class="btn btn-lg btn-primary expert-rule-save">Сохранить</button>
+            <button class="btn btn-secondary expert-rule-add ml-3">Добавить правило</button>
         </div>
     </div>
-
 {% endblock %}
 
 {% block scripts %}
@@ -93,7 +94,9 @@
             };
 
             var template = function () {
-                return $('<div>').addClass('element-box');
+                return $('<div>').addClass('element-box expert-rule').append(
+                    $('<button>').addClass('btn btn-sm btn-danger expert-rule-delete float-right').text('Удалить правило')
+                );
             };
 
             $('.expert-rule-container').on('refresh', '.expert-rule-parameter-first-select', function () {
@@ -113,7 +116,7 @@
                 } else {
                     var $input = $('<input>').addClass('form-control expert-rule-parameter-first-val-input').attr('type', param.type === 1 ? 'number' : 'text');
                     $parent.find('.expert-rule-parameter-first-val-container').empty().append($input);
-                    $input.focus();
+                    //$input.focus();
                 }
             }).on('refresh', '.expert-rule-type-select', function () {
                 var val = parseInt($(this).val());
@@ -156,7 +159,7 @@
                     } else {
                         var $input = $('<input>').addClass('form-control expert-rule-second-val-input').attr('type', parameter.type === 1 ? 'number' : 'text');
                         $parent.find('.expert-rule-second-val-container').empty().append($input);
-                        $input.focus();
+                        // $input.focus();
                     }
                 }
             }).on('change', '.expert-rule-parameter-first-select, .expert-rule-type-select, .expert-rule-second-select', function () {
@@ -164,13 +167,13 @@
             }).on('click', '.expert-rule-or-button', function (e) {
                 e.preventDefault();
 
-                $(this).parents('.element-box').find('.expert-rule-condition:last').after($t = templateCondition('ИЛИ Если', true));
+                $(this).parents('.expert-rule').find('.expert-rule-condition:last').after($t = templateCondition('ИЛИ Если', true));
                 $t.find('.expert-rule-parameter-first-select').trigger('refresh');
                 $(this).parent().find('.expert-rule-and-button').hide();
             }).on('click', '.expert-rule-and-button', function (e) {
                 e.preventDefault();
 
-                $(this).parents('.element-box').find('.expert-rule-condition:last').after($t = templateCondition('И Если', true));
+                $(this).parents('.expert-rule').find('.expert-rule-condition:last').after($t = templateCondition('И Если', true));
                 $t.find('.expert-rule-parameter-first-select').trigger('refresh');
                 $(this).parent().find('.expert-rule-or-button').hide();
             }).on('click', '.expert-rule-condition-remove', function (e) {
@@ -182,6 +185,8 @@
                 if ($parent.find('.expert-rule-condition').length === 1) {
                     $parent.find('.expert-rule-or-button, .expert-rule-and-button').show();
                 }
+            }).on('click', '.expert-rule-delete', function () {
+                $(this).parents('.expert-rule').hide();
             });
 
             $('.expert-rule-add').click(function (e) {
@@ -193,6 +198,93 @@
 
                 $('.expert-rule-container').append($template);
                 $template.find('.expert-rule-parameter-first-select, .expert-rule-type-select').trigger('refresh');
+            });
+
+            $('.expert-rule-save').click(function (e) {
+                e.preventDefault();
+
+                var data = $('.expert-rule').map(function (k, rule) {
+                    var $rule = $(rule);
+
+                    var conditions = $rule.find('.expert-rule-condition').map(function (k, condition) {
+                        var $condition = $(condition);
+
+                        var selectVal = parseInt($condition.find('.expert-rule-parameter-first-val-select').val());
+
+                        if (isNaN(selectVal)) {
+                            selectVal = null;
+                        }
+
+                        var inputVal = $condition.find('.expert-rule-parameter-first-val-input').val();
+                        if ($condition.find('.expert-rule-parameter-first-val-input').is('[type=number]')) {
+                            inputVal = parseInt(inputVal);
+                        }
+
+                        if (isNaN(inputVal)) {
+                            inputVal = null;
+                        }
+
+                        return {
+                            'operation': parseInt($condition.find('.expert-rule-operation-select').val()),
+                            'param_id': parseInt($condition.find('.expert-rule-parameter-first-select').val()),
+                            'param_value_id': selectVal,
+                            'param_value_any': inputVal
+                        };
+                    }).toArray();
+
+                    var operation = info.or;
+
+                    if ($rule.find('.expert-rule-or-button').is(':visible')) {
+                        operation = info.or;
+                    }
+
+                    if ($rule.find('.expert-rule-and-button').is(':visible')) {
+                        operation = info.and;
+                    }
+
+                    var selectVal = parseInt($rule.find('.expert-rule-second-val-select').val());
+                    if (isNaN(selectVal)) {
+                        selectVal = null;
+                    }
+                    var inputVal = $rule.find('.expert-rule-second-val-input').val();
+                    if ($rule.find('.expert-rule-second-val-input').is('[type=number]')) {
+                        inputVal = parseInt(inputVal);
+                    }
+                    if (isNaN(inputVal)) {
+                        inputVal = null;
+                    }
+
+                    return {
+                        'id': $rule.data('id'),
+                        'data': {
+                            'condition': conditions,
+                            'operation': operation,
+                            'type': parseInt($rule.find('.expert-rule-type-select').val()),
+                            'second_id': parseInt($rule.find('.expert-rule-second-select').val()),
+                            'second_value_id': selectVal,
+                            'second_value_any': inputVal
+                        },
+                        'deleted': !$rule.is(':visible')
+                    };
+                }).toArray();
+
+                console.log(data);
+                $(this).prop('disabled', true);
+                $.ajax({
+                    'url': '{% url 'office_system' sid=system.id section='rules' %}',
+                    'type': 'POST',
+                    'data': {
+                        'data': JSON.stringify(data)
+                    },
+                    'success': function (data) {
+                        debugger;
+                        window.location.reload();
+                    },
+                    'error': function (data) {
+                        debugger;
+                        window.location.reload();
+                    }
+                });
             });
 
             for (var k in rules) {
@@ -239,6 +331,7 @@
                 $then.find('.expert-rule-second-val-select').val(rule.second_value_id).trigger('refresh');
                 $then.find('.expert-rule-second-val-input').val(rule.second_value_any).trigger('refresh');
             }
+            $('.expert-rule-loading').hide();
         });
     </script>
 {% endblock %}

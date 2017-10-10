@@ -14,7 +14,7 @@ from django.views import View
 
 from expert_app.domain.common import EQ, NQ, LT, LQ, GT, GQ, PARAMETER_TO_ATTRIBUTE, PARAMETER_TO_PARAMETER
 from expert_app.models import SignupForm, LoginForm, System, SystemForm, Attribute, AttributeAllowedValue, ObjectForm, \
-    Object, Parameter, ParameterAllowedValue, QuestionForm, Question, Answer, AnswerForm
+    Object, Parameter, ParameterAllowedValue, QuestionForm, Question, Answer, AnswerForm, Rule
 
 from expert_app.domain.Session import Session as SessionDomain
 from expert_app.domain.Session import get_session as get_session_domain
@@ -538,7 +538,7 @@ class OfficeSystemQuestions(OfficeSystemBase):
 
 
 class OfficeSystemRules(OfficeSystemBase):
-    def handle(self, request, data):
+    def get(self, request, data):
         system = data['system']
 
         parameters = system.parameter_set.all()
@@ -579,36 +579,37 @@ class OfficeSystemRules(OfficeSystemBase):
 
         data['info'] = json.dumps(info)
 
-        info_rules = [
-            {
-                'id': 1,
-                'data': {
-                    'type': PARAMETER_TO_PARAMETER,
-                    'condition': [
-                        {
-                            'param_id': 4,
-                            'param_value_id': 9,
-                            'operation': LT,
-                            'param_value_any': None,
-                        },
-                        {
-                            'param_id': 2,
-                            'param_value_id': 2,
-                            'operation': EQ,
-                            'param_value_any': None,
-                        }
-                    ],
-                    'operation': 1,
-                    'second_id': 5,
-                    'second_value_id': None,
-                    'second_value_any': 678,
-                }
-            }
-        ]
+        rules = system.rule_set.all()
+        info_rules = [{'id': rule.id, 'data': json.loads(rule.data)} for rule in rules]
 
         data['rules'] = json.dumps(info_rules)
 
         return render(request, 'office/systems/single/rules.html', data)
+
+    def post(self, request, data):
+        system = data['system']
+        result = json.loads(request.POST.get('data', '[]'))
+
+        for rule in result:
+            if rule.get('deleted', False):
+                if rule.get('id') is None:
+                    continue
+
+                system.rule_set.get(pk=rule.get('id')).delete()
+            else:
+                rule_data = rule.get('data')
+                if not isinstance(rule_data, dict) or len(rule_data.get('condition', [])) == 0:
+                    continue
+
+                if rule.get('id') is None:
+                    rule_obj = Rule()
+                    rule_obj.system = system
+                else:
+                    rule_obj = system.rule_set.get(pk=rule.get('id'))
+
+                rule_obj.data = json.dumps(rule_data)
+                rule_obj.save()
+        return HttpResponse()
 
 
 class OfficeSystemAdd(View):
