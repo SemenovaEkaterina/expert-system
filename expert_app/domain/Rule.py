@@ -22,9 +22,7 @@ class Rule:
     def get_func(self):
         if self.type == PARAMETER_TO_ATTRIBUTE:
             def get_attribute_value(params):
-                print(4, params)
                 count = 0
-                print(5, self.condition)
                 for x in self.condition:
                     if 'operation' not in x:
                         x['operation'] = EQ
@@ -33,7 +31,6 @@ class Rule:
 
                     if x['param_value_id']:
                         value = param.get_value_by_id(x['param_value_id'])
-                        print(6, value)
                     else:
                         value = x['param_value_any']
                     if x['operation'] == EQ or x['operation'] ==NQ:

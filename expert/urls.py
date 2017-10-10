@@ -28,7 +28,7 @@ urlpatterns = [
                   url(r'^logout/$', Logout.as_view(), name='logout'),
 
                   url(r'^science/(?P<slug>\w+)/$', ScienceSystem.as_view(), name='science'),
-                  url(r'^science/(?P<slug>\w+)/session/$', ScienceSession.as_view(), name='science_session'),
+                  url(r'^science/(?P<slug>\w+)/(?P<skip>\w+)/session/$', ScienceSession.as_view(), name='science_session'),
                   url(r'^science/(?P<slug>\w+)/session/result/$', ScienceResult.as_view(), name='science_result'),
 
                   url(r'^office/systems/add/$', OfficeSystemAdd.as_view(), name='office_system_add'),

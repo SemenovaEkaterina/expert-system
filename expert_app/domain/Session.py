@@ -47,7 +47,11 @@ class Session:
                     pass
                     #Session.objects.change_question_state(self.id, self.current_question_id, -2)
 
-    def next_question(self):
+    def next_question(self, skip=False):
+        if skip == 'False':
+            if self.current_question_id is not None:
+                question = self.system.get_question_by_id(self.current_question_id)
+                return {'type': question.type, 'text': question.text, 'answers': question.get_options()}
         for question in self.system.get_questions():
             if not self.is_asked(question.get_id()):
                 self.current_question_id = question.get_id()
@@ -123,13 +127,13 @@ class Session:
         for obj in self.objects_stat.keys():
             print(TAB * 2, obj.get_name(), round(100 * self.objects_stat[obj] / len(obj.get_attributes())))
 
-        print(LINE)
+        (LINE)
 
     def get_stat(self):
         self.update_stat()
         result = []
         for obj in self.objects_stat.keys():
-            result.append({'name': obj.get_name(), 'value': round(100 * self.objects_stat[obj] / (len(obj.get_attributes()) + 0.0001))})
+            result.append({'name': obj.get_name(), 'value': round(100 * self.objects_stat[obj] / (len(self.system.get_attrs()) + 0.0001))})
 
         return result
 

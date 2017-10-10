@@ -22,6 +22,8 @@
                                                 style="outline: none; cursor:pointer;"
                                                 class="btn-block alert alert-{% cycle 'success' 'info' 'warning' 'danger' %}">
                                             {{ a.answer }}
+                                            <img class="mw-100" style="max-height: 300px;" src="
+                                                {% if a.img %}{{ a.img.url }}{% endif %}"/>
                                         </button>
                                     </div>
                                 {% endfor %}
@@ -54,7 +56,8 @@
                     <div style="padding-top: 50px">
                         <div class="row">
                             <div class="offset-0 col-md-5" style="opacity: 0.6;">
-                                <a href="{% url 'science_session' slug=slug %}" class="btn btn-block btn-outline-info">Пропустить вопрос</a>
+                                <a href="{% url 'science_session' slug=slug skip=True%}" class="btn btn-block btn-outline-info">Пропустить
+                                    вопрос</a>
                             </div>
                             <div class="offset-2 col-md-5" style="opacity: 0.6;">
                                 <a href="{% url 'science_result' slug=slug %}" class="btn btn-block btn-outline-danger">Завершить</a>
@@ -69,16 +72,17 @@
                         </h4>
                         <img class="mw-100" style="max-height: 300px;" src="
 
+
                                 {% if object.image %}{{ object.image.url }}{% else %}{% static 'img/front/system.jpg' %}{% endif %}"/>
                         <div class="padded-v">
                             <h6>{{ object.description }}</h6>
                         </div>
                     </div>
                     <div class="row">
-                            <div class="offset-2 col-md-8" style="opacity: 0.6;">
-                                <a href="{% url 'science' slug=slug %}" class="btn btn-block btn-outline-info">Выйти</a>
-                            </div>
+                        <div class="offset-2 col-md-8" style="opacity: 0.6;">
+                            <a href="{% url 'science' slug=slug %}" class="btn btn-block btn-outline-info">Выйти</a>
                         </div>
+                    </div>
                 {% endif %}
             </div>
         </div>

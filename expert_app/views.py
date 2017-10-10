@@ -696,7 +696,7 @@ class ScienceResult(View):
 
 
 class ScienceSession(View):
-    def get(self, request, slug):
+    def get(self, request, slug, skip):
         enableManagers()
 
         system = get_object_or_404(System, slug=slug)
@@ -710,7 +710,7 @@ class ScienceSession(View):
         else:
             session_domain = get_session_domain(request.session['exp_session_id_' + slug])
 
-        next_question = session_domain.next_question()
+        next_question = session_domain.next_question(skip)
 
         stat_items = session_domain.get_stat()
 
@@ -735,6 +735,8 @@ class ScienceSession(View):
 
         question = {'text': next_question['text'], 'type': next_question['type']}
         answers = next_question['answers']
+        for answer in answers:
+            answer['img'] = Answer.objects.get(id=answer['id']).image
 
         return render(request, 'science/session.html', {
             'title': system.name,
@@ -746,9 +748,8 @@ class ScienceSession(View):
             'stat_items': stat_items
         })
 
-    def post(self, request, slug):
+    def post(self, request, slug, skip):
         enableManagers()
-        print(request.POST)
         try:
             result_id = request.POST['answer']
         except:
@@ -763,7 +764,7 @@ class ScienceSession(View):
             session_domain = get_session_domain(request.session['exp_session_id_' + slug])
             session_domain.answer(result_id, result_value)
 
-        return HttpResponseRedirect(reverse('science_session', kwargs={'slug': slug}))
+        return HttpResponseRedirect(reverse('science_session', kwargs={'slug': slug, 'skip': False}))
 
 
 def handler404(request):
