@@ -24,8 +24,3 @@ services:
     build: ./services/mysql
     ports:
       - "3306:3306"
-
-networks:
-  default:
-    external:
-      name: iu5fun
