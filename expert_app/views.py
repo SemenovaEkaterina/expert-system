@@ -659,7 +659,39 @@ class ScienceSystem(View):
             'description': system.description,
             'slug': slug,
             'system': system,
-            'hasSession': 'exp_session_id_' + slug not in request.session
+            'hasSession': 'exp_session_id_' + slug in request.session
+        })
+
+
+class ScienceResult(View):
+    def get(self, request, slug):
+        system = get_object_or_404(System, slug=slug)
+
+        if 'exp_session_id_' + slug not in request.session:
+            system_domain = get_system_domain(system.id)
+            session_domain = SessionDomain(system_domain, request.user)
+            request.session['exp_session_id_' + slug] = session_domain.id
+        else:
+            session_domain = get_session_domain(request.session['exp_session_id_' + slug])
+
+        stat_items = session_domain.get_stat()
+
+        result = session_domain.get_stat()[0]
+        for item in session_domain.get_stat():
+            if item['value'] > result['value']:
+                result = item
+
+        result = Object.objects.get(system_id=system.id, name=result['name'])
+
+        del request.session['exp_session_id_' + slug]
+        return render(request, 'science/session.html', {
+            'title': system.name,
+            'description': system.description,
+            'slug': slug,
+            'system': system,
+            'finished': True,
+            'object': result,
+            'stat_items': stat_items
         })
 
 
@@ -682,14 +714,22 @@ class ScienceSession(View):
 
         stat_items = session_domain.get_stat()
 
+        result = session_domain.get_stat()[0]
+        for item in session_domain.get_stat():
+            if item['value'] > result['value']:
+                result = item
+
+        result = Object.objects.get(system_id=system.id, name=result['name'])
+
         if not next_question:
-            request.session.clear()
+            del request.session['exp_session_id_' + slug]
             return render(request, 'science/session.html', {
                 'title': system.name,
                 'description': system.description,
                 'slug': slug,
                 'system': system,
                 'finished': True,
+                'object': result,
                 'stat_items': stat_items
             })
 
@@ -708,11 +748,20 @@ class ScienceSession(View):
 
     def post(self, request, slug):
         enableManagers()
-        result = request.POST['answer']
+        print(request.POST)
+        try:
+            result_id = request.POST['answer']
+        except:
+            result_id = None
+
+        try:
+            result_value = request.POST['answer_value']
+        except:
+            result_value = None
 
         if 'exp_session_id_' + slug in request.session:
             session_domain = get_session_domain(request.session['exp_session_id_' + slug])
-            session_domain.answer(result)
+            session_domain.answer(result_id, result_value)
 
         return HttpResponseRedirect(reverse('science_session', kwargs={'slug': slug}))
 

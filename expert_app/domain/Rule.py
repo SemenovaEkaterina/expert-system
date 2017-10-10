@@ -22,13 +22,25 @@ class Rule:
     def get_func(self):
         if self.type == PARAMETER_TO_ATTRIBUTE:
             def get_attribute_value(params):
+                print(4, params)
                 count = 0
+                print(5, self.condition)
                 for x in self.condition:
                     if 'operation' not in x:
                         x['operation'] = EQ
                     operation = operations[x['operation']]
                     param = self.system.get_param_by_id(x['param_id'])
-                    if param.id in params and operation(params[param.id], x['param_value_id']):
+
+                    if x['param_value_id']:
+                        value = param.get_value_by_id(x['param_value_id'])
+                        print(6, value)
+                    else:
+                        value = x['param_value_any']
+                    if x['operation'] == EQ or x['operation'] ==NQ:
+                        result = operation(str(params[param.id]), (value))
+                    else:
+                        result = operation(int(params[param.id]), int(value))
+                    if param.id in params and result:
                         count += 1
 
                 if count == len(self.condition):

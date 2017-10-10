@@ -6,7 +6,11 @@
         <div class="col-md-6 mx-auto text-center">
             <a href="{% url 'science_session' slug=slug %}" class="btn btn-lg btn-primary">
                 <i class="os-icon os-icon-social-09"></i>
-                Приступить
+                {% if hasSession %}
+                    Продолжить
+                {% else %}
+                    Начать
+                {% endif %}
             </a>
         </div>
     </div>

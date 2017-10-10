@@ -164,7 +164,7 @@ class Session(models.Model):
 class SessionParamState(models.Model):
     session = models.ForeignKey(Session)
     param = models.ForeignKey(Parameter)
-    value = models.IntegerField(blank=True, null=True)
+    value = models.CharField(blank=True, null=True, max_length=50)
 
 
 class SessionQuestionState(models.Model):

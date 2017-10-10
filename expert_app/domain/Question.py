@@ -2,11 +2,12 @@ from .common import *
 
 
 class Question:
-    def __init__(self, text, question_type, options, q_id=None):
+    def __init__(self, text, question_type, options, q_id=None, param=None):
         self.type = question_type
         self.text = text
         self.options = []
         self.id = q_id
+        self.param = param
 
         if self.id is None:
             if Question.objects is not None:
@@ -37,21 +38,24 @@ class Question:
     def get_param_value_by_answer(self, answer_id, user_answer):
         for option in self.options:
             if int(option['id']) == int(answer_id):
-                return option['param_value_id']
+                return option['param_value']
             if int(answer_id) is -1:
                 if operations[option['compare']](user_answer, option['answer']):
-                    return option['param_value_id']
+                    return option['param_value']
 
     def get_param_id_by_answer(self, answer_id, user_answer):
         for option in self.options:
             if int(option['id']) == int(answer_id):
                 return option['param_id']
-            if answer_id is -1:
+            if answer_id is None:
                 if operations[option['compare']](user_answer, option['answer']):
                     return option['param_id']
 
     def get_type(self):
         return self.type
+
+    def get_param(self):
+        return self.param
 
 
 Question.id = 0

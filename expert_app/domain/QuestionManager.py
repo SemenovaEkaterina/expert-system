@@ -8,8 +8,8 @@ from expert_app.models_domain import ParameterAllowedValue
 class QuestionManager(models.Manager):
 
     @staticmethod
-    def create_question(text, type):
-        question = Question.objects.create(text=text, type=type)
+    def create_question(text, type, id):
+        question = Question.objects.create(name=text, type=type)
         return question.id
 
     @staticmethod

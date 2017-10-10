@@ -60,9 +60,14 @@ class SystemManager(models.Manager):
         for question in Question.objects.filter(system=system):
             options = []
             for o in Answer.objects.filter(question=question):
+                if o.parameter_value_id is None:
+                    value = o.parameter_value_any
+                else:
+                    value = ParameterAllowedValue.objects.get(id=o.parameter_value_id)
+
                 options.append({'id': o.id, 'compare': EQ, 'answer': o.name, 'param_id': o.question.parameter.id,
-                                'param_value_id': o.parameter_value.id})
-            own_system.add_question(OwnQuestion(question.name, question.type, options, question.id))
+                                'param_value': value})
+            own_system.add_question(OwnQuestion(question.name, question.type, options, question.id, question.parameter))
         for rule in Rule.objects.filter(system=system):
             data = json.loads(rule.data)
             own_system.add_rule(OwnRule(data['type'], data['condition'], data['second_id'], data['second_value_id'], rule.id))

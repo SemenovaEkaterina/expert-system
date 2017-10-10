@@ -48,7 +48,7 @@ class SessionManager(models.Manager):
     def define_attr(session_id, attr_id, value):
         session = Session.objects.get(id=session_id)
         attr = Attribute.objects.get(id=attr_id)
-        SessionAttributeState.objects.create(session=session, attr=attr, value=value)
+        SessionAttributeState.objects.update_or_create(session=session, attr=attr, value=value)
 
     @staticmethod
     def get_by_id(s_id):
@@ -79,11 +79,12 @@ class SessionManager(models.Manager):
 
         for q in own_session.questions.keys():
             if q:
-                SessionQuestionState.objects.update_or_create(session=session, question_id=q, value=own_session.questions[q])
+                SessionQuestionState.objects.update_or_create(session_id=session.id, question_id=q, value=own_session.questions[q])
 
         for p in own_session.params.keys():
             if p:
                 SessionParamState.objects.update_or_create(session=session, param_id=p, value=own_session.params[p])
+
 
 
 

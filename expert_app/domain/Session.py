@@ -72,9 +72,17 @@ class Session:
 
                 self.current_question_id = None
 
-                param = self.system.get_question_by_id(question).get_param_id_by_answer(value_id, user_answer)
+                param = self.system.get_question_by_id(question).get_param().id
 
-                param_value = self.system.get_question_by_id(question).get_param_value_by_answer(value_id, user_answer)
+                if user_answer is not None:
+                    param_value = user_answer
+                else:
+                    if isinstance(self.system.get_question_by_id(question).get_param_value_by_answer(value_id, user_answer), str):
+                        param_value = self.system.get_question_by_id(question).get_param_value_by_answer(value_id, user_answer)
+                    else:
+                        param_value = self.system.get_question_by_id(question).get_param_value_by_answer(value_id, user_answer).value
+
+
                 self.params[param] = param_value
 
                 if param and Session.objects is not None:
