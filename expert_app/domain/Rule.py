@@ -28,7 +28,7 @@ class Rule:
                         x['operation'] = EQ
                     operation = operations[x['operation']]
                     param = self.system.get_param_by_id(x['param_id'])
-                    if param.id in params and operation(params[param.id], x['param_value']):
+                    if param.id in params and operation(params[param.id], x['param_value_id']):
                         count += 1
 
                 if count == len(self.condition):

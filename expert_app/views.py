@@ -669,7 +669,7 @@ class ScienceSession(View):
 
         system = get_object_or_404(System, slug=slug)
 
-        #request.session.clear()
+        # request.session.clear()
 
         if 'exp_session_id_' + slug not in request.session:
             system_domain = get_system_domain(system.id)
@@ -707,6 +707,7 @@ class ScienceSession(View):
         })
 
     def post(self, request, slug):
+        enableManagers()
         result = request.POST['answer']
 
         if 'exp_session_id_' + slug in request.session:

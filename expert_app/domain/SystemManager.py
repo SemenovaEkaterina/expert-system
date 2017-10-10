@@ -1,3 +1,5 @@
+import json
+
 from django.db import models
 from expert_app.models_domain import System
 from expert_app.domain.System import System as OwnSystem
@@ -62,6 +64,6 @@ class SystemManager(models.Manager):
                                 'param_value_id': o.parameter_value.id})
             own_system.add_question(OwnQuestion(question.name, question.type, options, question.id))
         for rule in Rule.objects.filter(system=system):
-            data = ast.literal_eval(rule.data)
+            data = json.loads(rule.data)
             own_system.add_rule(OwnRule(data['type'], data['condition'], data['second_id'], data['second_value_id'], rule.id))
         return own_system

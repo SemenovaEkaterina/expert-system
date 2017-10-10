@@ -129,7 +129,7 @@ class Session:
         Session.objects.save(self)
 
 
-Session.objects = None
+#Session.objects = None
 
 def get_session(id):
     return Session.objects.get_by_id(id)
