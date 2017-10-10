@@ -13,4 +13,5 @@ RUN git clone -b init https://github.com/SemenovaEkaterina/expert-system.git
 
 WORKDIR expert-system
 
-CMD gunicorn --log-level debug --workers 4 --bind 0.0.0.0:8000 expert.wsgi
+CMD python manage.py migrate && \
+    gunicorn --log-level debug --workers 4 --bind 0.0.0.0:8000 expert.wsgi
