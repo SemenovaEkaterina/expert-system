@@ -33,9 +33,11 @@ class Rule:
                         value = param.get_value_by_id(x['param_value_id'])
                     else:
                         value = x['param_value_any']
-                    if x['operation'] == EQ or x['operation'] ==NQ:
+                    if x['operation'] == EQ or x['operation'] == NQ:
                         result = operation(str(params[param.id]), (value))
                     else:
+                        if params[param.id] is None:
+                            continue
                         result = operation(int(params[param.id]), int(value))
                     if param.id in params and result:
                         count += 1

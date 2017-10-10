@@ -362,7 +362,7 @@ class OfficeSystemObjects(OfficeSystemBase):
 
             data['attrs'] = attrs_data
 
-            print(attrs_data)
+            # print(attrs_data)
 
             if request.method == 'POST':
                 if form.is_valid():
