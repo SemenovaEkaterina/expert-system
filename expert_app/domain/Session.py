@@ -45,7 +45,7 @@ class Session:
                 self.questions[question] = -2
                 if Session.objects is not None:
                     pass
-                    #Session.objects.change_question_state(self.id, self.current_question_id, -2)
+                    # Session.objects.change_question_state(self.id, self.current_question_id, -2)
 
     def next_question(self, skip=False):
         if skip == 'False':
@@ -57,7 +57,7 @@ class Session:
                 self.current_question_id = question.get_id()
                 if Session.objects is not None:
                     pass
-                    #Session.objects.set_current_question(self.id, self.current_question_id)
+                    # Session.objects.set_current_question(self.id, self.current_question_id)
                 self.set_asked(self.current_question_id)
                 self.save_changes()
                 question = self.system.get_question_by_id(self.current_question_id)
@@ -71,8 +71,7 @@ class Session:
 
                 if Session.objects is not None:
                     pass
-                    #Session.objects.change_question_state(self.id, self.current_question_id, value_id)
-
+                    # Session.objects.change_question_state(self.id, self.current_question_id, value_id)
 
                 self.current_question_id = None
 
@@ -81,17 +80,20 @@ class Session:
                 if user_answer is not None:
                     param_value = user_answer
                 else:
-                    if isinstance(self.system.get_question_by_id(question).get_param_value_by_answer(value_id, user_answer), str):
-                        param_value = self.system.get_question_by_id(question).get_param_value_by_answer(value_id, user_answer)
+                    if isinstance(
+                            self.system.get_question_by_id(question).get_param_value_by_answer(value_id, user_answer),
+                            str):
+                        param_value = self.system.get_question_by_id(question).get_param_value_by_answer(value_id,
+                                                                                                         user_answer)
                     else:
-                        param_value = self.system.get_question_by_id(question).get_param_value_by_answer(value_id, user_answer).value
-
+                        param_value = self.system.get_question_by_id(question).get_param_value_by_answer(value_id,
+                                                                                                         user_answer).value
 
                 self.params[param] = param_value
 
                 if param and Session.objects is not None:
                     pass
-                    #Session.objects.change_param_state(self.id, param.get_id(), param_value)
+                    # Session.objects.change_param_state(self.id, param.get_id(), param_value)
 
                 for rule in self.system.rules:
                     result = rule.get_func()(self.params)
@@ -100,7 +102,7 @@ class Session:
 
                         if Session.objects is not None:
                             Session.objects.define_attr(self.id, result['attr'].get_id(), result['value_id'])
-                        #self.update_stat()
+                            # self.update_stat()
         self.save_changes()
 
     def update_stat(self):
@@ -133,7 +135,11 @@ class Session:
         self.update_stat()
         result = []
         for obj in self.objects_stat.keys():
-            result.append({'name': obj.get_name(), 'value': round(100 * self.objects_stat[obj] / (len(self.system.get_attrs()) + 0.0001))})
+            result.append({'name': obj.get_name(),
+                           'value': round(100 * self.objects_stat[obj] / (len(self.system.get_attrs()) + 0.0001))})
+
+        result = sorted(result, key=lambda result: result['name'])
+        result = sorted(result, key=lambda result: result['value'], reverse=True)
 
         return result
 
@@ -141,7 +147,7 @@ class Session:
         Session.objects.save(self)
 
 
-#Session.objects = None
+# Session.objects = None
 
 def get_session(id):
     return Session.objects.get_by_id(id)
