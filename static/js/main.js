@@ -100,14 +100,6 @@ $(function () {
         $(this).removeClass('over');
     });
 
-    // #4. BOOTSTRAP RELATED JS ACTIVATIONS
-
-    // - Activate tooltips
-    $('[data-toggle="tooltip"]').tooltip();
-
-    // - Activate popovers
-    $('[data-toggle="popover"]').popover();
-
     // #5. TODO Application
 
     // Tasks foldable trigger
