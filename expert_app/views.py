@@ -767,6 +767,68 @@ class ScienceSession(View):
         return HttpResponseRedirect(reverse('science_session', kwargs={'slug': slug, 'skip': False}))
 
 
+class ScienceSystemReport(View):
+    def get(self, request, slug):
+        system = get_object_or_404(System, slug=slug)
+        rules = system.rule_set.all()
+        rules_data = []
+
+        ops = {
+            EQ: '=',
+            NQ: '!=',
+            LT: '<',
+            LQ: '<=',
+            GT: '>',
+            GQ: '>=',
+        }
+
+        for rule in rules:
+            data = json.loads(rule.data)
+            rule_data = {
+                'conditions': [],
+                'and_or': 'ИЛИ' if data.get('operation', 1) == 2 else 'И',
+                'then_obj': Attribute.objects.get(pk=data.get('second_id', 0)) if data.get(
+                    'type') == PARAMETER_TO_ATTRIBUTE else Parameter.objects.get(pk=data.get('second_id', 0)),
+                'is_attribute': data.get('type') == PARAMETER_TO_ATTRIBUTE
+            }
+
+            if data.get('second_value_id') is None:
+                then_val = data.get('second_value_any')
+            else:
+                if data.get('type') == PARAMETER_TO_ATTRIBUTE:
+                    then_val = AttributeAllowedValue.objects.get(pk=data.get('second_value_id'))
+                else:
+                    then_val = ParameterAllowedValue.objects.get(pk=data.get('second_value_id'))
+
+                then_val = '' if then_val is None else then_val.value
+
+            rule_data['then_val'] = then_val
+
+            for i in data.get('condition', []):
+                if i['param_value_id'] is not None:
+                    param_val = ParameterAllowedValue.objects.get(pk=i['param_value_id'])
+                    if param_val is not None:
+                        param_val = param_val.value
+                else:
+                    param_val = i['param_value_any']
+
+                rule_data['conditions'].append({
+                    'parameter': Parameter.objects.get(pk=i['param_id']),
+                    'parameter_value': param_val,
+                    'operation': ops.get(i['operation'], '='),
+                })
+
+            rules_data.append(rule_data)
+
+        return render(request, 'science/report.html', {
+            'title': system.name,
+            'description': system.description,
+            'slug': slug,
+            'system': system,
+            'rules': rules_data
+        })
+
+
 def handler404(request):
     response = render_to_response('error.html', {
         'request': request,

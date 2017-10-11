@@ -1,0 +1,138 @@
+{% extends 'science/layout.html' %}
+
+{% block content %}
+    {% load static %}
+    <div class="row padded-v">
+        <div class="col-sm-6">
+            <div class="element-box">
+                <h5 class="form-header">
+                    Атрибуты
+                </h5>
+                <div class="element-box-content">
+                    <ul>
+                        {% for attr in system.attribute_set.all %}
+                            <li>
+                                <b>{{ attr.name }}</b>:
+                                <ul>
+                                    {% for val in attr.attributeallowedvalue_set.all %}
+                                        <li>
+                                            <span class="text-info">{{ val.value }}</span>
+                                        </li>
+                                    {% endfor %}
+                                </ul>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6">
+            <div class="element-box">
+                <h5 class="form-header">
+                    Объекты
+                </h5>
+                <div class="element-box-content">
+                    <ul>
+                        {% for object in system.object_set.all %}
+                            <li>
+                                <b>{{ object.name }}</b>:
+                                <ul>
+                                    {% for attr in object.objectattributevalue_set.all %}
+                                        <li>{{ attr.attribute.name }}:
+                                            <span class="text-info">{{ attr.attribute_value.value }}</span>
+                                        </li>
+                                    {% endfor %}
+                                </ul>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6">
+            <div class="element-box">
+                <h5 class="form-header">
+                    Параметры
+                </h5>
+                <div class="element-box-content">
+                    <ul>
+                        {% for parameter in system.parameter_set.all %}
+                            <li>
+                                <b>{{ parameter.name }}</b>:
+                                {% if parameter.type == 0 %}
+                                    <ul>
+                                        {% for value in parameter.parameterallowedvalue_set.all %}
+                                            <li>
+                                                <span class="text-info">{{ value.value }}</span>
+                                            </li>
+                                        {% endfor %}
+                                    </ul>
+                                {% elif parameter.type == 1 %}
+                                    Число
+                                {% elif parameter.type == 2 %}
+                                    Строка
+                                {% endif %}
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-12">
+            <div class="element-box">
+                <h5 class="form-header">
+                    Вопросы
+                </h5>
+                <div class="element-box-content">
+                    <ul>
+                        {% for question in system.question_set.all %}
+                            <li>
+                                <b>{{ question.name }} (параметр: {{ question.parameter.name }})</b>
+                                {% if question.type == 0 %}
+                                    <ul>
+                                        {% for answer in question.answer_set.all %}
+                                            <li>
+                                                {{ answer.name }} {% if answer.image %} +
+                                                <span class="text-success">картинка</span>{% endif %}
+                                                {% if question.parameter.type == 0 %}
+                                                    <span class="text-info">{{ answer.parameter_value.value }}</span>
+                                                {% else %}
+                                                    <span class="text-info">{{ answer.parameter_value_any }}</span>
+                                                {% endif %}
+                                            </li>
+                                        {% endfor %}
+                                    </ul>
+                                {% elif question.type == 1 %}
+                                    Число
+                                {% elif question.type == 2 %}
+                                    Строка
+                                {% endif %}
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-sm-12">
+            <div class="element-box">
+                <h5 class="form-header">
+                    Правила
+                </h5>
+                <div class="element-box-content">
+                    <ul>
+                        {% for rule in rules %}
+                            <li> {% if rule.is_attribute %}Атрибут {% endif %}<b>{{ rule.then_obj.name }}</b> = <span class="text-info">{{ rule.then_val }}</span>
+                                <ul>
+                                    {% for cond in rule.conditions %}
+                                        <li>Если параметр <b>{{ cond.parameter.name }}</b> {{ cond.operation }} <span class="text-info">{{ cond.parameter_value }}</span>  {% if not forloop.last %}<b class="text-warning">{{ rule.and_or }}</b>{% endif %}</li>
+                                    {% endfor %}
+                                </ul>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
