@@ -12,6 +12,7 @@ ADD https://api.github.com/repos/SemenovaEkaterina/expert-system/git/refs/heads/
 RUN git clone -b init https://github.com/SemenovaEkaterina/expert-system.git
 
 WORKDIR expert-system
+RUN rm expert/settings.py && cp expert/settings_prod.py expert/settings.py
 
 CMD python manage.py migrate && \
     gunicorn --log-level debug --workers 4 --bind 0.0.0.0:8000 expert.wsgi

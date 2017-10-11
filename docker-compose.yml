@@ -15,12 +15,5 @@ services:
   project:
     build: ./services/project
     ports:
-      - "127.0.0.1:8000:8000"
-    depends_on:
-      - mysql
+      - "8000:8000"
     restart: always
-
-  mysql:
-    build: ./services/mysql
-    ports:
-      - "3306:3306"
