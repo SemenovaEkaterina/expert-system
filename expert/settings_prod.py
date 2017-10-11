@@ -25,7 +25,7 @@ SECRET_KEY = '9@8pmuih!6)dean$4!e#rik)5#i!+xb#2=7lc+1ineaahn7%u8'
 DEBUG = False
 
 ALLOWED_HOSTS = [
-    'iu5.fun'
+    '*'
 ]
 
 # Application definition
