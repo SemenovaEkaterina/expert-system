@@ -8,7 +8,6 @@ services:
       - "443:443"
     volumes:
       - ./services/nginx:/etc/nginx/conf.d
-      - /etc/letsencrypt:/etc/letsencrypt
     depends_on:
       - project
 
